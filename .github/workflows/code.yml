@@ -116,7 +116,7 @@ jobs:
 
       - name: Test module --version works using the installed wheel
         # If more than one module in src/ replace with module name to test
-        run: python -m $(ls src | grep -v egg-info | head -1) --version
+        run: dls-servbase --version-json
 
   container:
     needs: [lint, dist, test]
@@ -212,4 +212,4 @@ jobs:
         with:
           password: ${{ secrets.PYPI_TOKEN }}
 
-# dae_devops_fingerprint 124f285bb28a3453b6a0771c01c9dc89
+# dae_devops_fingerprint 61d65b39296510a71243b277e3ecc013
