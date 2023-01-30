@@ -1,10 +1,10 @@
 import logging
 
-# Base class for a Thing which has a name and traits.
-from dls_servbase_api.thing import Thing
-
 # Utilities.
 from dls_utilpack.callsign import callsign
+
+# Base class for a Thing which has a name and traits.
+from dls_servbase_api.thing import Thing
 
 logger = logging.getLogger(__name__)
 

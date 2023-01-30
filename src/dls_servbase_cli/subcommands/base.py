@@ -2,14 +2,14 @@ import logging
 import os
 import tempfile
 
+# Utilities.
+from dls_utilpack.visit import get_visit_year
+
 # Configurator.
 from dls_servbase_lib.configurators.configurators import (
     Configurators,
     dls_servbase_configurators_set_default,
 )
-
-# Utilities.
-from dls_utilpack.visit import get_visit_year
 
 logger = logging.getLogger(__name__)
 

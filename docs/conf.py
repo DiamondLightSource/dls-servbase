@@ -1,11 +1,9 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.3.2.
+# ********** It has been generated automatically by dae_devops version 0.4.0.
 # ********** For repository_name dls-servbase
 
 from pathlib import Path
 from subprocess import check_output
-
-import dls_servbase_lib
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -13,6 +11,8 @@ import dls_servbase_lib
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 from sphinx.domains.python import PythonDomain
+
+import dls_servbase_lib
 
 # -- General configuration ------------------------------------------------
 
@@ -188,6 +188,7 @@ ultimate_replacements = {
     "$" + "{repository_name}": "dls-servbase",
     "$" + "{package_name}": "dls_servbase_lib",
     "$" + "{git_url}": "https://gitlab.diamond.ac.uk/kbp43231",
+    "$" + "{python_version_at_least}": "3.8",
 }
 
 
@@ -196,4 +197,4 @@ def setup(app):
     app.connect("source-read", ultimateReplace)
 
 
-# dae_devops_fingerprint e1b392b2acf954738d149028d575f238
+# dae_devops_fingerprint e982958c40cc93952bbb78c601bcfd20

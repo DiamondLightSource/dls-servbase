@@ -3,11 +3,11 @@ import json
 # Use standard logging in this module.
 import logging
 
-# Exceptions.
-from dls_servbase_api.exceptions import DuplicateUuidException, NotFound
-
 # Method to import a class from a file.
 from dls_utilpack.import_class import import_class
+
+# Exceptions.
+from dls_servbase_api.exceptions import DuplicateUuidException, NotFound
 
 logger = logging.getLogger(__name__)
 

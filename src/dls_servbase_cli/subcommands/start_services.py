@@ -3,6 +3,9 @@ import asyncio
 # Use standard logging in this module.
 import logging
 
+# Utilities.
+from dls_utilpack.callsign import callsign
+
 # Base class for cli subcommands.
 from dls_servbase_cli.subcommands.base import Base
 
@@ -11,9 +14,6 @@ from dls_servbase_lib.contexts.contexts import Contexts
 
 # Special reference to the gui so we give the url to the user on the info.
 from dls_servbase_lib.guis.guis import dls_servbase_guis_get_default
-
-# Utilities.
-from dls_utilpack.callsign import callsign
 
 logger = logging.getLogger()
 

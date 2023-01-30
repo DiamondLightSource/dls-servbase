@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.3.2.
+# ********** It has been generated automatically by dae_devops version 0.4.0.
 # ********** For repository_name dls-servbase
 
 # ---------------------------------------------------------------------
@@ -69,4 +69,4 @@ publish_docs:
 	cp -r build/html/* $(DOCS_PUBLISH_ROOT)
 	
 
-# dae_devops_fingerprint b3fd58859e3f3a2b04474f508ca88503
+# dae_devops_fingerprint 638cf348ec2f322b7b9f04d530307d75

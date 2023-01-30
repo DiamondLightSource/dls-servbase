@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.3.2.
+# ********** It has been generated automatically by dae_devops version 0.4.0.
 # ********** For repository_name dls-servbase
 
 [build-system]
@@ -102,4 +102,4 @@ source = ["src", "**/site-packages/"]
 [tool.tox]
 legacy_tox_ini = "[tox]\nskipsdist=True\n\n[testenv:{pre-commit,mypy,pytest,docs}]\n# Don't create a virtualenv for the command, requires tox-direct plugin\ndirect = True\npassenv = *\nallowlist_externals = \n    pytest \n    pre-commit\n    mypy\n    sphinx-build\n    sphinx-autobuild\ncommands =\n    pytest: pytest {posargs}\n    mypy: mypy src tests {posargs}\n    pre-commit: pre-commit run --all-files {posargs}\n    docs: sphinx-{posargs:build -EW --keep-going} -T docs build/html\n"
 
-# dae_devops_fingerprint 5a5ac3304002ec0503a43f0b8a8f7d68
+# dae_devops_fingerprint 891506e71a08819713206219442a9fc0

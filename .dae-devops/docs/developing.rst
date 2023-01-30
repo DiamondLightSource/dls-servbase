@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.3.2.
+.. # ********** It has been generated automatically by dae_devops version 0.4.0.
 .. # ********** For repository_name dls-servbase
 
 Developing
@@ -12,7 +12,8 @@ Clone the repository::
     $ git clone https://gitlab.diamond.ac.uk/kbp43231/dls-servbase.git
 
 It is recommended that you install into a virtual environment so this
-installation will not interfere with any existing Python software::
+installation will not interfere with any existing Python software.
+Make sure to have at least python version 3.8 then::
 
     $ python3 -m venv /scratch/$USER/myvenv
     $ source /scratch/$USER/myvenv/bin/activate
@@ -35,4 +36,4 @@ If you plan to modify the docs, you will need to::
     
 
 
-.. # dae_devops_fingerprint 498d487269bf132ac580621fd40d523c
+.. # dae_devops_fingerprint dac81ff2ba4786d22e83b5ec59976b56

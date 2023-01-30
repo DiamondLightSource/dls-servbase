@@ -2,6 +2,11 @@ import logging
 import multiprocessing
 import threading
 
+# Utilities.
+from dls_utilpack.callsign import callsign
+from dls_utilpack.explain import explain
+from dls_utilpack.require import require
+
 # Dataface protocolj things.
 from dls_servbase_api.datafaces.constants import Commands, Keywords
 
@@ -14,11 +19,6 @@ from dls_servbase_lib.base_aiohttp import BaseAiohttp
 # Types of dls_servbase_dataface.
 # Global dls_servbase_dataface.
 from dls_servbase_lib.datafaces.datafaces import Datafaces
-
-# Utilities.
-from dls_utilpack.callsign import callsign
-from dls_utilpack.explain import explain
-from dls_utilpack.require import require
 
 logger = logging.getLogger(__name__)
 

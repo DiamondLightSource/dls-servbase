@@ -1,15 +1,16 @@
 import logging
 
+from dls_utilpack.callsign import callsign
+
+# Utilities.
+from dls_utilpack.explain import explain
+
 # Base class which maps flask requests to methods.
 from dls_servbase_lib.contexts.base import Base
 
 # Contexts.
 from dls_servbase_lib.datafaces.context import Context as DatafaceContext
 from dls_servbase_lib.guis.context import Context as GuiContext
-from dls_utilpack.callsign import callsign
-
-# Utilities.
-from dls_utilpack.explain import explain
 
 logger = logging.getLogger(__name__)
 

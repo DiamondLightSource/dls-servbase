@@ -2,6 +2,7 @@ import logging
 
 # Base class for table definitions.
 from dls_normsql.table_definition import TableDefinition
+
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
 
 logger = logging.getLogger(__name__)

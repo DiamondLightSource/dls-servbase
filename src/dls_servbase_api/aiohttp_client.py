@@ -8,15 +8,15 @@ from urllib.parse import urlparse
 
 import aiohttp
 
-# Exceptions.
-from dls_servbase_api.exceptions import (
-    ClientConnectorError as DlsBillyClientConnectorError,
-)
-
 # Utilities.
 from dls_utilpack.callsign import callsign
 from dls_utilpack.describe import describe
 from dls_utilpack.explain import explain, explain2
+
+# Exceptions.
+from dls_servbase_api.exceptions import (
+    ClientConnectorError as DlsBillyClientConnectorError,
+)
 
 logger = logging.getLogger(__name__)
 

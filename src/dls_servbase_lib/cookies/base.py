@@ -1,10 +1,10 @@
 import logging
 
-# Base class for generic things.
-from dls_servbase_api.thing import Thing
-
 # Utilities.
 from dls_utilpack.callsign import callsign
+
+# Base class for generic things.
+from dls_servbase_api.thing import Thing
 
 logger = logging.getLogger(__name__)
 

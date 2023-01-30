@@ -2,6 +2,10 @@ import logging
 import multiprocessing
 import threading
 
+# Utilities.
+from dls_utilpack.callsign import callsign
+from dls_utilpack.require import require
+
 # Basic things.
 from dls_servbase_api.thing import Thing
 
@@ -10,10 +14,6 @@ from dls_servbase_lib.base_aiohttp import BaseAiohttp
 
 # Gui protocolj things (must agree with javascript).
 from dls_servbase_lib.guis.constants import Commands, Cookies, Keywords
-
-# Utilities.
-from dls_utilpack.callsign import callsign
-from dls_utilpack.require import require
 
 logger = logging.getLogger(__name__)
 

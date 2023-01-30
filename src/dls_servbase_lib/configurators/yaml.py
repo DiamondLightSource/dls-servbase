@@ -3,18 +3,18 @@ import re
 from string import Template
 
 import yaml
-
-# Exceptions.
-from dls_servbase_api.exceptions import NotFound
-
-# Base class which maps flask requests to methods.
-from dls_servbase_lib.configurators.base import Base
 from dls_utilpack.callsign import callsign
 from dls_utilpack.explain import explain2
 
 # Utilities.
 from dls_utilpack.require import require
 from dls_utilpack.substitute import substitute_string
+
+# Exceptions.
+from dls_servbase_api.exceptions import NotFound
+
+# Base class which maps flask requests to methods.
+from dls_servbase_lib.configurators.base import Base
 
 logger = logging.getLogger(__name__)
 

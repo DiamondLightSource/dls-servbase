@@ -6,6 +6,9 @@ import os
 import pytest
 import yaml
 
+# Utilities.
+from dls_utilpack.describe import describe
+
 # Exceptions.
 from dls_servbase_api.exceptions import NotFound
 
@@ -14,9 +17,6 @@ from dls_servbase_lib.configurators.configurators import Configurators
 
 # Environment variables with some extra functionality.
 from dls_servbase_lib.envvar import Envvar
-
-# Utilities.
-from dls_utilpack.describe import describe
 
 logger = logging.getLogger(__name__)
 

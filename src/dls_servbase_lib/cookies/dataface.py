@@ -1,15 +1,15 @@
 import json
 import logging
 
+# Utilities.
+from dls_utilpack.callsign import callsign
+from dls_utilpack.require import require
+
 # Dataface interface.
 from dls_servbase_api.datafaces.datafaces import Datafaces
 
 # Base class for cookie things.
 from dls_servbase_lib.cookies.base import Base as CookieBase
-
-# Utilities.
-from dls_utilpack.callsign import callsign
-from dls_utilpack.require import require
 
 logger = logging.getLogger(__name__)
 

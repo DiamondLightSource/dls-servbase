@@ -1,5 +1,8 @@
 import logging
 
+# Utilities.
+from dls_utilpack.describe import describe
+
 # API constants.
 from dls_servbase_api.constants import Keywords as ProtocoljKeywords
 
@@ -9,9 +12,6 @@ from dls_servbase_lib.guis.constants import Commands, Cookies, Keywords
 
 # Object managing gui
 from dls_servbase_lib.guis.guis import dls_servbase_guis_get_default
-
-# Utilities.
-from dls_utilpack.describe import describe
 
 # Base class for the tester.
 from tests.base_context_tester import BaseContextTester
