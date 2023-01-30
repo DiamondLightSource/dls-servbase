@@ -1,0 +1,18 @@
+/* ********** Please don't edit this file! */
+/* ********** It has been generated automatically by dae_devops version 0.3.2. */
+/* ********** For repository_name dls-servbase */
+
+/* The theme normally has this, but I think it's ok to use the full width of the window in all @media sizes.
+
+@media (min-width: 960px)
+.bd-page-width {
+    max-width: 88rem;
+}
+
+*/
+
+.bd-page-width {
+    max-width: 100%;
+}
+
+/* dae_devops_fingerprint d8c6eae425108f98d350b474782c9a85 */
