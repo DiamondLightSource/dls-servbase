@@ -1,7 +1,7 @@
 import logging
 
 # Base class for the aiosqlite database object.
-from dls_normsql.aiosqlite import Aiosqlite as SqlinkyAiosqlite
+from dls_normsql.aiosqlite import Aiosqlite as NormsqlAiosqlite
 
 # Base class for our database definition.
 from dls_servbase_lib.databases.database_definition import DatabaseDefinition
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 # ----------------------------------------------------------------------------------------
-class Aiosqlite(DatabaseDefinition, SqlinkyAiosqlite):
+class Aiosqlite(DatabaseDefinition, NormsqlAiosqlite):
     """
     Class with coroutines for creating and querying a sqlite database.
     We use dls-normsql to do the heavy lifting.
@@ -26,7 +26,7 @@ class Aiosqlite(DatabaseDefinition, SqlinkyAiosqlite):
         DatabaseDefinition.__init__(self)
 
         # Constructor for the database implementation.
-        SqlinkyAiosqlite.__init__(self, specification)
+        NormsqlAiosqlite.__init__(self, specification)
 
     # ----------------------------------------------------------------------------------------
     def reinstance(self):
@@ -44,7 +44,7 @@ class Aiosqlite(DatabaseDefinition, SqlinkyAiosqlite):
         """
 
         # Add tables common in all implementations.
-        await SqlinkyAiosqlite.add_table_definitions(self)
+        await NormsqlAiosqlite.add_table_definitions(self)
 
         # Add tables from our definition.
         await DatabaseDefinition.add_table_definitions(self)

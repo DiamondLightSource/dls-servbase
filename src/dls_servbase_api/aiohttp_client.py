@@ -15,7 +15,7 @@ from dls_utilpack.explain import explain, explain2
 
 # Exceptions.
 from dls_servbase_api.exceptions import (
-    ClientConnectorError as DlsBillyClientConnectorError,
+    ClientConnectorError as DlsServbaseClientConnectorError,
 )
 
 logger = logging.getLogger(__name__)
@@ -135,7 +135,7 @@ class AiohttpClient:
 
                     raise exception_class(exception_message)
         except aiohttp.ClientConnectorError as exception:
-            raise DlsBillyClientConnectorError(
+            raise DlsServbaseClientConnectorError(
                 explain(exception, f"connecting to {callsign(self)}")
             )
 

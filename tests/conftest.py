@@ -54,9 +54,6 @@ def logging_setup():
     # Registering signal handler.
     logging.getLogger("dls_utilpack.signal").setLevel("INFO")
 
-    # Set filter on the ispyb logger to ignore the annoying NOTICE.
-    logging.getLogger("ispyb").addFilter(_ispyb_logging_filter())
-
     # Cover the version.
     # logger.info("\n%s", (json.dumps(version_meta(), indent=4)))
 

@@ -86,6 +86,9 @@ class Dataface(CookieBase):
         Release cookie and free its connections and other resources.
         """
 
+        logger.info(
+            f"[RELCOOK] releasing client to cookie dataface {str(self.__dataface)}"
+        )
         if self.__dataface is not None:
             await self.__dataface.close_client_session()
             self.__dataface = None
