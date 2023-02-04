@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.4.0.
+# ********** It has been generated automatically by dae_devops version 0.5.1.
 # ********** For repository_name dls-servbase
 
 from pathlib import Path
@@ -188,7 +188,7 @@ ultimate_replacements = {
     "$" + "{repository_name}": "dls-servbase",
     "$" + "{package_name}": "dls_servbase_lib",
     "$" + "{git_url}": "https://gitlab.diamond.ac.uk/kbp43231",
-    "$" + "{python_version_at_least}": "3.8",
+    "$" + "{python_version_at_least}": "3.9",
 }
 
 
@@ -197,4 +197,4 @@ def setup(app):
     app.connect("source-read", ultimateReplace)
 
 
-# dae_devops_fingerprint e982958c40cc93952bbb78c601bcfd20
+# dae_devops_fingerprint 389ff630a4932067e15b261055392e20

@@ -1,16 +1,16 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.4.0.
+.. # ********** It has been generated automatically by dae_devops version 0.5.1.
 .. # ********** For repository_name dls-servbase
 
 Installing
 =======================================================================
 
 
-You will need python 3.8 or later. 
+You will need python 3.9 or later. 
 
-On a Diamond Light Source internal computer, you can achieve Python 3.8 by::
+On a Diamond Light Source internal computer, you can achieve Python 3.9 by::
 
-    $ module load python/3.8
+    $ module load python/3.9
 
 You can check your version of python by typing into a terminal::
 
@@ -40,4 +40,4 @@ You can check the version that has been installed by typing::
     $ dls-servbase --version
     $ dls-servbase --version-json
 
-.. # dae_devops_fingerprint ccb45053b6429ddaafb4e4e554dbe60c
+.. # dae_devops_fingerprint 6452f6cf28bc217ba15f858859a68a81
