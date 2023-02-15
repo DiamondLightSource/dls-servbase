@@ -11,10 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 # ----------------------------------------------------------------------------------------
-class TestDatabaseImage:
+class TestDatabaseSqlite:
     def test(self, constants, logging_setup, output_directory):
         """
-        Tests the sqlite implementation of Database.
+        Tests the sqlite implementation of the Database interface.
+
+        This does not use a service.
         """
 
         database_specification = {

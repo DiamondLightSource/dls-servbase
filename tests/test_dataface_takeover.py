@@ -20,7 +20,7 @@ class TestDatafaceTakeover:
     def test_dataface_laptop(self, constants, logging_setup, output_directory):
         """ """
 
-        configuration_file = "tests/configurations/laptop.yaml"
+        configuration_file = "tests/configurations/servbase.yaml"
         DatafaceTakeoverTester().main(constants, configuration_file, output_directory)
 
 

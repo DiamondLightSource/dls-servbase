@@ -65,12 +65,23 @@ class Aiosqlite(Thing):
 
         sql = "SELECT * FROM cookies WHERE uuid = '%s'" % (cookie_uuid)
 
-        records = await self.__database.query(sql)
+        records = await self.__database.query(sql, why="[COOKSEL]")
 
         if len(records) == 0:
             return None
 
         return records[0]
+
+    # ----------------------------------------------------------------------------------------
+    async def update_cookie(self, row):
+        """"""
+        await self.establish_database_connection()
+
+        count = await self.__database.update(
+            Tablenames.COOKIES, row, "uuid = '%s'" % (row["uuid"]), why="[COOKSEL]"
+        )
+
+        return {"count": count}
 
     # ----------------------------------------------------------------------------------------
     async def backup(self):
@@ -126,17 +137,6 @@ class Aiosqlite(Thing):
                 table_name, record, where, subs=subs, why=why
             )
         }
-
-    # ----------------------------------------------------------------------------------------
-    async def update_cookie(self, row):
-        """"""
-        await self.establish_database_connection()
-
-        count = await self.__database.update(
-            Tablenames.COOKIES, row, "uuid = '%s'" % (row["uuid"])
-        )
-
-        return {"count": count}
 
     # ----------------------------------------------------------------------------------------
     async def report_health(self):

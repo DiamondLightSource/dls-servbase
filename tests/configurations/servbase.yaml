@@ -12,6 +12,13 @@ logging_settings:
     console:
         enabled: True
         verbose: True
+        filters:
+            markers:
+                - "[RELCOOK]"
+                - "[COOKSEL]"
+                - "[COOKOFF]"
+                - "[GUITABS]"
+                - "[SETTINGVAL]"
     logfile:
         enabled: True
         directory: ${output_directory}/logfile.log

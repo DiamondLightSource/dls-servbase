@@ -17,9 +17,17 @@ logger = logging.getLogger(__name__)
 
 
 class TestAiohttp:
+    """
+    Test the aiohttp package directly, just to make sure it operations like we think it does.
+
+    Does not import from any of the dls_servbase packages.
+
+    Start a process for a server, and one for a client, and let them talk.
+
+    """
 
     # ----------------------------------------------------------------------------------------
-    def test(
+    def test_internet_sockest(
         self,
         constants,
         logging_setup,
@@ -33,7 +41,14 @@ class TestAiohttp:
 
         try:
             # Run main in asyncio event loop.
-            asyncio.run(self._main_coroutine(constants, output_directory))
+            asyncio.run(
+                self._main_coroutine(
+                    constants,
+                    "http://*:22132",
+                    "http://localhost:22132",
+                    output_directory,
+                )
+            )
 
         except Exception as exception:
             logger.exception("unexpected exception during the test", exc_info=exception)
@@ -43,17 +58,46 @@ class TestAiohttp:
             pytest.fail(failure_message)
 
     # ----------------------------------------------------------------------------------------
-    async def _main_coroutine(self, constants, output_directory):
+    def test_unix_pipes(
+        self,
+        constants,
+        logging_setup,
+        output_directory,
+    ):
+        """ """
+
+        multiprocessing.current_process().name = "main"
+
+        failure_message = None
+
+        try:
+            # Run main in asyncio event loop.
+            asyncio.run(
+                self._main_coroutine(
+                    constants,
+                    f"{output_directory}/unix_socket",
+                    f"{output_directory}/unix_socket",
+                    output_directory,
+                )
+            )
+
+        except Exception as exception:
+            logger.exception("unexpected exception during the test", exc_info=exception)
+            failure_message = str(exception)
+
+        if failure_message is not None:
+            pytest.fail(failure_message)
+
+    # ----------------------------------------------------------------------------------------
+    async def _main_coroutine(
+        self, constants, server_endpoint, client_endpoint, output_directory
+    ):
         """ """
 
         loop = asyncio.get_running_loop()
 
-        if False:
-            self.__server_endpoint = "http://*:22132"
-            self.__client_endpoint = "http://localhost:22132"
-        else:
-            self.__server_endpoint = f"{output_directory}/unix_socket"
-            self.__client_endpoint = f"{output_directory}/unix_socket"
+        self.__server_endpoint = server_endpoint
+        self.__client_endpoint = client_endpoint
 
         with concurrent.futures.ProcessPoolExecutor() as pool:
             # Start a server and client in separate processes.

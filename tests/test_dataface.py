@@ -16,10 +16,14 @@ logger = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------------------------
 class TestDataface:
+    """
+    Test that we can do a basic database operation through the service.
+    """
+
     def test(self, constants, logging_setup, output_directory):
         """ """
 
-        configuration_file = "tests/configurations/laptop.yaml"
+        configuration_file = "tests/configurations/servbase.yaml"
         DatafaceTester().main(constants, configuration_file, output_directory)
 
 
