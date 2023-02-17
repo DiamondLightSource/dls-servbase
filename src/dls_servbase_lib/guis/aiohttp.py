@@ -109,7 +109,10 @@ class Aiohttp(Thing, BaseAiohttp):
     async def _load_tabs(self, opaque, request_dict):
 
         tab_id = await self.get_cookie_content(
-            opaque, Cookies.TABS_MANAGER, Keywords.TAB_ID
+            opaque,
+            Cookies.TABS_MANAGER,
+            Keywords.TAB_ID,
+            xfrom="guis.Aiohttp_load_tabs",
         )
         logger.debug(f"[GUITABS] tab_id from cookie content is {tab_id}")
 

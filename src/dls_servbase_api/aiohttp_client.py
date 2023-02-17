@@ -271,7 +271,9 @@ class AiohttpClient:
         try:
             response = await self.client_get_json("report_health")
         except Exception as exception:
-            logger.error(explain2(exception, "contacting server"), exc_info=exception)
+            logger.error(
+                explain2(exception, "[BADHEALTH] contacting server"), exc_info=exception
+            )
             response = {"exception": str(exception)}
 
         return response
