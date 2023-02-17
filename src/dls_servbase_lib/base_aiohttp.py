@@ -587,7 +587,7 @@ class BaseAiohttp:
         if not cookie.has_contents():
             # Get the cookie from the persistent storage.
             logger.debug(
-                f"from {xfrom} loading cookie {id(cookie)} {cookie.uuid()} {cookie_name} from persist"
+                f"[COOKSEL] from {xfrom} loading cookie {id(cookie)} {cookie.uuid()} {cookie_name} from persist"
             )
             await cookie.load_from_persist()
 
