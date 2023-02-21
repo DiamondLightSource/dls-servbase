@@ -532,10 +532,10 @@ class BaseAiohttp:
         if self.__cookie_specification is None:
             return
 
-        logger.info("[RELCOOK] releasing cookies")
+        logger.debug("[RELCOOK] releasing cookies")
 
         for cookie in opaque.cookies.list():
-            logger.info("[RELCOOK] releasing cookie")
+            logger.debug("[RELCOOK] releasing cookie")
             await cookie.release()
 
     # ----------------------------------------------------------------------------------------
