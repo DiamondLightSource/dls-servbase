@@ -86,7 +86,7 @@ class Dataface(CookieBase):
         Release cookie and free its connections and other resources.
         """
 
-        logger.info(
+        logger.debug(
             f"[RELCOOK] releasing client to cookie dataface {str(self.__dataface)}"
         )
         if self.__dataface is not None:
