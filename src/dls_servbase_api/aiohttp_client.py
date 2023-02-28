@@ -293,7 +293,9 @@ class AiohttpClient:
             # TODO: Check response from shutdown, whatever it might be.
             await self._client_session.get(f"{self.__client_netloc}/shutdown")
 
-            logger.debug(f"[PIDAL] client requested {callsign(self)} server shutdown")
+            logger.debug(
+                f"[PIDAL] client has requested {callsign(self)} server shutdown"
+            )
 
             max_seconds = 5.0
             nap_seconds = 0.050
@@ -310,7 +312,7 @@ class AiohttpClient:
                 # Too much time has passed while waiting for server to shut down?
                 if time.time() > timeout_time:
                     raise RuntimeError(
-                        "remote server did not shut down within {max_seconds} seconds"
+                        f"remote server did not shut down within {max_seconds} seconds"
                     )
 
                 logger.debug(
