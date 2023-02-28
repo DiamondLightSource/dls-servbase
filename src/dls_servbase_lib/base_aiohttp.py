@@ -92,6 +92,7 @@ class BaseAiohttp:
         self._shutdown_event = asyncio.Event()
 
         self.__thread = None
+        self.__app_runner = None
 
         # Set log level default to avoid unwanted messages.
         logging.getLogger("aiohttp").setLevel(
@@ -283,7 +284,7 @@ class BaseAiohttp:
             result = await self.client_shutdown()
 
             if result.get("had_existed", False):
-                logger.info(f"shutdown existing process {callsign(self)}")
+                logger.info(f"we have shut down an existing process {callsign(self)}")
             else:
                 logger.debug(f"[AUTSHUT] {callsign(self)} {result['message']}")
 
@@ -315,17 +316,19 @@ class BaseAiohttp:
 
             web_app.add_routes(routes)
 
-            self._runner = aiohttp.web.AppRunner(web_app)
+            self.__app_runner = aiohttp.web.AppRunner(web_app)
 
-            await self._runner.setup()
+            await self.__app_runner.setup()
 
             endpoint = self.__aiohttp_specification["server"]
             if endpoint.startswith("http"):
                 parts = urlparse(endpoint)
-                site = aiohttp.web.TCPSite(self._runner, parts.hostname, parts.port)
+                site = aiohttp.web.TCPSite(
+                    self.__app_runner, parts.hostname, parts.port
+                )
             else:
                 parts = urlparse(endpoint)
-                site = aiohttp.web.UnixSite(self._runner, parts.path)
+                site = aiohttp.web.UnixSite(self.__app_runner, parts.path)
 
             await site.start()
         except Exception as exception:
@@ -339,7 +342,7 @@ class BaseAiohttp:
         # If we were started via process, we will need to stop our own event loop.
         if self.owned_event_loop2 is not None:
             logger.debug(
-                f"[PIDAL] directly shutting down {callsign(self)} owned event loop on pid {os.getpid()}"
+                f"[NEWSHUT] directly shutting down {callsign(self)} owned event loop on pid {os.getpid()}"
             )
 
             try:
@@ -347,6 +350,15 @@ class BaseAiohttp:
 
             except Exception as exception:
                 raise RuntimeError(callsign(self, explain(exception, "shutting down")))
+
+        elif self.__app_runner is not None:
+            logger.debug(
+                f"[NEWSHUT] directly shutting down {callsign(self)} by awaiting self.__app_runner.cleanup()"
+            )
+            await self.__app_runner.cleanup()
+
+        # Set event which will cause server to shutdown.
+        self._shutdown_event.set()
 
     # ----------------------------------------------------------------------------------------
     async def wait_for_shutdown(self):
@@ -688,12 +700,11 @@ class BaseAiohttp:
     # Handle request to exit the process.
     async def _route_shutdown(self, request):
         try:
-            await self.direct_shutdown()
+            # Schedule a shutdown to happen after we finish this response.
+            asyncio.create_task(self.direct_shutdown())
 
             response = aiohttp.web.Response(status=200, text="ok")
 
-            # Set event which will cause server to shutdown.
-            self._shutdown_event.set()
             return response
         except Exception as exception:
             return self._compose_standard_exception(exception)
@@ -747,12 +758,7 @@ class BaseAiohttp:
     async def client_shutdown(self):
         """"""
 
-        # It looks like there is a process started for this object?
-        # TODO: Handle shutdown request from server when server was started as thread or coro.
-        if self.__process2 is not None and self.__process2.is_alive():
-            return await self.__aiohttp_client.client_shutdown()
-        else:
-            return {"message": "not sending shutdown"}
+        return await self.__aiohttp_client.client_shutdown()
 
     # ----------------------------------------------------------------------------------------
     async def close_client_session(self):
