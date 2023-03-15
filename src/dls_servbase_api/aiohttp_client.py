@@ -333,6 +333,12 @@ class AiohttpClient:
         }
 
     # ----------------------------------------------------------------------------------------
+    async def open_client_session(self):
+        """"""
+
+        await self._establish_client_session()
+
+    # ----------------------------------------------------------------------------------------
     async def close_client_session(self):
         """"""
 
