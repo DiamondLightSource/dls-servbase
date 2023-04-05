@@ -48,8 +48,8 @@ class StartServices(Base):
         """"""
 
         # Load the configuration.
-        dls_servbase_configurator = self.get_configurator()
-        context_configuration = await dls_servbase_configurator.load()
+        dls_servbase_multiconf = self.get_multiconf()
+        context_configuration = await dls_servbase_multiconf.load()
 
         if "all" in self._args.service_names:
             selected_service_names = []

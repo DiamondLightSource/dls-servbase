@@ -15,6 +15,7 @@ import aiohttp.web
 import aiohttp.web_runner
 from dls_logformatter.functions import list_exception_causes
 from dls_mainiac_lib.mainiac import Mainiac
+from dls_multiconf_lib.multiconfs import multiconfs_get_default, multiconfs_has_default
 from dls_utilpack.callsign import callsign
 from dls_utilpack.explain import explain
 from dls_utilpack.global_signals import global_sigint
@@ -24,10 +25,6 @@ from dls_utilpack.search_file import SearchFileNotFound, search_file
 
 from dls_servbase_api.aiohttp_client import AiohttpClient  # noqa: I001
 from dls_servbase_api.constants import Keywords  # noqa: I001
-from dls_servbase_lib.configurators.configurators import (
-    dls_servbase_configurators_get_default,
-    dls_servbase_configurators_has_default,
-)
 from dls_servbase_lib.cookies.cookies import Cookies
 
 logger = logging.getLogger(__name__)
@@ -169,12 +166,12 @@ class BaseAiohttp:
         """"""
 
         try:
-            if dls_servbase_configurators_has_default():
-                dls_servbase_configurator = dls_servbase_configurators_get_default()
+            if multiconfs_has_default():
+                dls_servbase_multiconf = multiconfs_get_default()
 
                 # ---------------------------------------------------------------------
-                # Configurator must provide logging settings.
-                logging_settings = dls_servbase_configurator.require("logging_settings")
+                # Multiconf must provide logging settings.
+                logging_settings = dls_servbase_multiconf.require("logging_settings")
 
                 # Remove existing handlers which may have been inherited from a fork.
                 handlers = list(logging.getLogger().handlers)
@@ -188,7 +185,7 @@ class BaseAiohttp:
 
                 # ---------------------------------------------------------------------
                 # We need special method for mpqueue since it is a multiprocessing object.
-                # logging_mpqueue = dls_servbase_configurator.get_logging_mpqueue()
+                # logging_mpqueue = dls_servbase_multiconf.get_logging_mpqueue()
                 # if logging_mpqueue is not None:
                 #     # Remove existing handlers.
                 #     handlers = list(logging.getLogger().handlers)
@@ -206,7 +203,7 @@ class BaseAiohttp:
                 # else:
                 #     logger.debug("[MPQLOG] no mpqueue")
             else:
-                logger.debug("[MPQLOG] no configurator")
+                logger.debug("[MPQLOG] no multiconf")
 
         except Exception as exception:
             logger.exception(

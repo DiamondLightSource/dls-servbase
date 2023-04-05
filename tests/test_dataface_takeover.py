@@ -33,9 +33,9 @@ class DatafaceTakeoverTester(BaseContextTester):
     async def _main_coroutine(self, constants, output_directory):
         """ """
 
-        dls_servbase_configurator = self.get_configurator()
+        dls_servbase_multiconf = self.get_multiconf()
 
-        context_configuration = await dls_servbase_configurator.load()
+        context_configuration = await dls_servbase_multiconf.load()
         dls_servbase_context = Contexts().build_object(context_configuration)
 
         async with dls_servbase_context:
@@ -53,7 +53,7 @@ class DatafaceTakeoverTester(BaseContextTester):
             )
 
             # Make a new dataface context with the same specification.
-            dataface_specification = dls_servbase_configurator.require(
+            dataface_specification = dls_servbase_multiconf.require(
                 "dls_servbase_dataface_specification"
             )
 

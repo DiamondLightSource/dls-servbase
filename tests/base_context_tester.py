@@ -5,11 +5,9 @@ import os
 
 import pytest
 
-# Configurator.
-from dls_servbase_lib.configurators.configurators import (
-    Configurators,
-    dls_servbase_configurators_set_default,
-)
+# Multiconf.
+from dls_multiconf_lib.constants import ThingTypes as MulticonfThingTypes
+from dls_multiconf_lib.multiconfs import Multiconfs, multiconfs_set_default
 
 logger = logging.getLogger(__name__)
 
@@ -55,29 +53,27 @@ class BaseContextTester:
             pytest.fail(failure_message)
 
     # ----------------------------------------------------------------------------------------
-    def get_configurator(self):
+    def get_multiconf(self):
 
-        dls_servbase_configurator = Configurators().build_object(
+        dls_servbase_multiconf = Multiconfs().build_object(
             {
-                "type": "dls_servbase_lib.dls_servbase_configurators.yaml",
+                "type": MulticonfThingTypes.YAML,
                 "type_specific_tbd": {"filename": self.__configuration_file},
             }
         )
 
         # For convenience, always do these replacement.
-        dls_servbase_configurator.substitute(
-            {"output_directory": self.__output_directory}
-        )
+        dls_servbase_multiconf.substitute({"output_directory": self.__output_directory})
 
-        # Add various things from the environment into the configurator.
-        dls_servbase_configurator.substitute(
+        # Add various things from the environment into the multiconf.
+        dls_servbase_multiconf.substitute(
             {
                 "CWD": os.getcwd(),
                 "PYTHONPATH": os.environ.get("PYTHONPATH", "PYTHONPATH"),
             }
         )
 
-        # Set the global value of our configurator which might be used in other modules.
-        dls_servbase_configurators_set_default(dls_servbase_configurator)
+        # Set the global value of our multiconf which might be used in other modules.
+        multiconfs_set_default(dls_servbase_multiconf)
 
-        return dls_servbase_configurator
+        return dls_servbase_multiconf

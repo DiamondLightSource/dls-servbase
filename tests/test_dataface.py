@@ -36,9 +36,9 @@ class DatafaceTester(BaseContextTester):
     async def _main_coroutine(self, constants, output_directory):
         """ """
 
-        dls_servbase_configurator = self.get_configurator()
+        dls_servbase_multiconf = self.get_multiconf()
 
-        context_configuration = await dls_servbase_configurator.load()
+        context_configuration = await dls_servbase_multiconf.load()
 
         dls_servbase_context = Contexts().build_object(context_configuration)
 

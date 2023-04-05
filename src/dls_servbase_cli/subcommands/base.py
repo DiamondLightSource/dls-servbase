@@ -2,14 +2,10 @@ import logging
 import os
 import tempfile
 
+from dls_multiconf_lib.multiconfs import Multiconfs, multiconfs_set_default
+
 # Utilities.
 from dls_utilpack.visit import get_visit_year
-
-# Configurator.
-from dls_servbase_lib.configurators.configurators import (
-    Configurators,
-    dls_servbase_configurators_set_default,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -25,15 +21,15 @@ class Base:
         self.__temporary_directory = None
 
     # ----------------------------------------------------------------------------------------
-    def get_configurator(self):
+    def get_multiconf(self):
 
-        dls_servbase_configurator = Configurators().build_object_from_environment()
+        dls_servbase_multiconf = Multiconfs().build_object_from_environment()
 
         # For convenience, make a temporary directory for this test.
         self.__temporary_directory = tempfile.TemporaryDirectory()
 
-        # Make the temporary directory available to the configurator.
-        dls_servbase_configurator.substitute(
+        # Make the temporary directory available to the multiconf.
+        dls_servbase_multiconf.substitute(
             {"temporary_directory": self.__temporary_directory.name}
         )
 
@@ -55,9 +51,9 @@ class Base:
             substitutions["VISIT"] = self._args.visit
             substitutions["YEAR"] = year
 
-        dls_servbase_configurator.substitute(substitutions)
+        dls_servbase_multiconf.substitute(substitutions)
 
-        # Set this as the default configurator so it is available everywhere.
-        dls_servbase_configurators_set_default(dls_servbase_configurator)
+        # Set this as the default multiconf so it is available everywhere.
+        multiconfs_set_default(dls_servbase_multiconf)
 
-        return dls_servbase_configurator
+        return dls_servbase_multiconf
