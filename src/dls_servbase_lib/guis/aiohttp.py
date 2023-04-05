@@ -7,7 +7,7 @@ from dls_utilpack.callsign import callsign
 from dls_utilpack.require import require
 
 # Basic things.
-from dls_servbase_api.thing import Thing
+from dls_utilpack.thing import Thing
 
 # Base class for an aiohttp server.
 from dls_servbase_lib.base_aiohttp import BaseAiohttp

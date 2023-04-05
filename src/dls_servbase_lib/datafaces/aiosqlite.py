@@ -1,9 +1,9 @@
 import logging
 
-from dls_servbase_api.databases.constants import Tablenames
-
 # Base class for generic things.
-from dls_servbase_api.thing import Thing
+from dls_utilpack.thing import Thing
+
+from dls_servbase_api.databases.constants import Tablenames
 
 # Database manager.
 from dls_servbase_lib.databases.databases import Databases
