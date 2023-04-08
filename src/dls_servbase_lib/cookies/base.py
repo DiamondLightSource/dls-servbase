@@ -4,7 +4,7 @@ import logging
 from dls_utilpack.callsign import callsign
 
 # Base class for generic things.
-from dls_servbase_api.thing import Thing
+from dls_utilpack.thing import Thing
 
 logger = logging.getLogger(__name__)
 

@@ -44,9 +44,9 @@ class GuiTester(BaseContextTester):
     async def _main_coroutine(self, constants, output_directory):
         """ """
 
-        # Make a configurator and load the context configuration file.
-        configurator = self.get_configurator()
-        context_configuration = await configurator.load()
+        # Make a multiconf and load the context configuration file.
+        multiconf = self.get_multiconf()
+        context_configuration = await multiconf.load()
 
         dls_servbase_gui_specification = context_configuration[
             "dls_servbase_gui_specification"
