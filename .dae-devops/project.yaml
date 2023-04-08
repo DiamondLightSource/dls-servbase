@@ -15,5 +15,7 @@ primary:
           list:
               - aiohttp==3.8.3
               - dls_mainiac
+              - dls_multiconf
               - dls_normsql
+              - dls_utilpack
               - setproctitle

@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 description = "Simple HTTP service for database operations."
-dependencies = ["aiohttp==3.8.3", "dls_mainiac", "dls_normsql", "setproctitle"]
+dependencies = ["aiohttp==3.8.3", "dls_mainiac", "dls_multiconf", "dls_normsql", "dls_utilpack", "setproctitle"]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.rst"
@@ -102,4 +102,4 @@ source = ["src", "**/site-packages/"]
 [tool.tox]
 legacy_tox_ini = "[tox]\nskipsdist=True\n\n[testenv:{pre-commit,mypy,pytest,docs}]\n# Don't create a virtualenv for the command, requires tox-direct plugin\ndirect = True\npassenv = *\nallowlist_externals = \n    pytest \n    pre-commit\n    mypy\n    sphinx-build\n    sphinx-autobuild\ncommands =\n    pytest: pytest {posargs}\n    mypy: mypy src tests {posargs}\n    pre-commit: pre-commit run --all-files {posargs}\n    docs: sphinx-{posargs:build -EW --keep-going} -T docs build/html\n"
 
-# dae_devops_fingerprint 650775c77de0c504ed50955287c22e92
+# dae_devops_fingerprint b6059f181a9c0125cb482b270e753f4e
