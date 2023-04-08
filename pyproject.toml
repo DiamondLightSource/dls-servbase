@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 description = "Simple HTTP service for database operations."
-dependencies = ["aiohttp==3.8.3", "dls_mainiac", "dls_multiconf", "dls_normsql", "dls_utilpack", "setproctitle"]
+dependencies = ["aiohttp==3.8.4", "dls_mainiac", "dls_multiconf", "dls_normsql", "dls_utilpack", "setproctitle"]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.rst"
