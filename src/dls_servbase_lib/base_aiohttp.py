@@ -124,7 +124,8 @@ class BaseAiohttp:
         )
         self.__process2.start()
         logger.debug(f"[PIDAL] {callsign(self)} pid {self.__process2.pid} is started")
-        timeout = 5.0
+        # TODO: Make maximum wait time for start_process event to be configurable.
+        timeout = 30.0
         naptime = 0.25
         time0 = time.time()
         while time.time() - time0 < timeout:
