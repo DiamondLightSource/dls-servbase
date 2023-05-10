@@ -135,7 +135,7 @@ class AiohttpClient:
                                 exception_class = import_classname_from_modulename(
                                     classname, modulename
                                 )
-                            except:
+                            except Exception:
                                 exception_class = RuntimeError
                                 exception_message = f"{qualname}: {exception_message}"
                     except Exception:
