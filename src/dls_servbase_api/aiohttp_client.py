@@ -294,7 +294,7 @@ class AiohttpClient:
             await self._client_session.get(f"{self.__client_netloc}/shutdown")
 
             logger.debug(
-                f"[PIDAL] client has requested {callsign(self)} server shutdown"
+                f"[DISSHU] client has requested {callsign(self)} server shutdown"
             )
 
             max_seconds = 5.0
@@ -316,7 +316,7 @@ class AiohttpClient:
                     )
 
                 logger.debug(
-                    f"[PIDAL] waiting for {callsign(self)} server shutdown, napping {nap_seconds}"
+                    f"[DISSHU] waiting for {callsign(self)} server shutdown, napping {nap_seconds}"
                 )
 
                 # Small sleep after sending shutdown command lets the server really shut down.

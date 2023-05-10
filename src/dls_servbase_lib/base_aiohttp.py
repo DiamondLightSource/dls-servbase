@@ -123,7 +123,7 @@ class BaseAiohttp:
             target=self.prepare_to_activate_process,
         )
         self.__process2.start()
-        logger.debug(f"[PIDAL] {callsign(self)} pid {self.__process2.pid} is started")
+        logger.debug(f"[DISSHU] {callsign(self)} pid {self.__process2.pid} is started")
         # TODO: Make maximum wait time for start_process event to be configurable.
         timeout = 30.0
         naptime = 0.25
@@ -158,7 +158,7 @@ class BaseAiohttp:
 
         # state = "alive" if is_alive else "dead"
 
-        # logger.debug(f"[PIDAL] {callsign(self)} pid {self.__process2.pid} is {state}")
+        # logger.debug(f"[DISSHU] {callsign(self)} pid {self.__process2.pid} is {state}")
 
         return is_alive
 
@@ -242,7 +242,7 @@ class BaseAiohttp:
         except Exception as exception:
             logger.exception("exception in process", exc_info=exception)
 
-        logger.debug(f"[PIDAL] {callsign(self)} pid {os.getpid()} has quit")
+        logger.debug(f"[DISSHU] {callsign(self)} pid {os.getpid()} has quit")
 
     # ----------------------------------------------------------------------------------------
     async def start_thread(self):
@@ -340,7 +340,7 @@ class BaseAiohttp:
         # If we were started via process, we will need to stop our own event loop.
         if self.owned_event_loop2 is not None:
             logger.debug(
-                f"[NEWSHUT] directly shutting down {callsign(self)} owned event loop on pid {os.getpid()}"
+                f"[DISSHU] directly shutting down {callsign(self)} owned event loop on pid {os.getpid()}"
             )
 
             try:
@@ -351,7 +351,7 @@ class BaseAiohttp:
 
         elif self.__app_runner is not None:
             logger.debug(
-                f"[NEWSHUT] directly shutting down {callsign(self)} by awaiting self.__app_runner.cleanup()"
+                f"[DISSHU] directly shutting down {callsign(self)} by awaiting self.__app_runner.cleanup()"
             )
             await self.__app_runner.cleanup()
 
