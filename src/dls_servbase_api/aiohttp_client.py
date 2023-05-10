@@ -12,6 +12,7 @@ import aiohttp
 from dls_utilpack.callsign import callsign
 from dls_utilpack.describe import describe
 from dls_utilpack.explain import explain, explain2
+from dls_utilpack.import_class import import_classname_from_modulename
 
 # Exceptions.
 from dls_servbase_api.exceptions import (
@@ -128,8 +129,15 @@ class AiohttpClient:
                             exception_message = response_dict["exception"].get(
                                 "message", "no message"
                             )
-                            exception_class = RuntimeError
-                            exception_message = f"{qualname}: {exception_message}"
+                            try:
+                                modulename = ".".join(qualname.split(".")[:-1])
+                                classname = qualname.split(".")[-1]
+                                exception_class = import_classname_from_modulename(
+                                    classname, modulename
+                                )
+                            except:
+                                exception_class = RuntimeError
+                                exception_message = f"{qualname}: {exception_message}"
                     except Exception:
                         pass
 
