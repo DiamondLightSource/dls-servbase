@@ -1,12 +1,9 @@
 import logging
 
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
-
-# Object managing datafaces.
+from dls_servbase_api.datafaces.context import Context as ClientContext
 from dls_servbase_api.datafaces.datafaces import dls_servbase_datafaces_get_default
-
-# Context creator.
-from dls_servbase_lib.contexts.contexts import Contexts
+from dls_servbase_lib.datafaces.context import Context as ServerContext
 
 # Base class for the tester.
 from tests.base_context_tester import BaseContextTester
@@ -40,65 +37,72 @@ class DatafaceTester(BaseContextTester):
 
         context_configuration = await dls_servbase_multiconf.load()
 
-        dls_servbase_context = Contexts().build_object(context_configuration)
+        servbase_specification = context_configuration[
+            "dls_servbase_dataface_specification"
+        ]
 
-        async with dls_servbase_context:
-            dataface = dls_servbase_datafaces_get_default()
+        dls_servbase_client_context = ClientContext(servbase_specification)
 
-            # Write one record.
-            await dataface.insert(
-                Tablenames.COOKIES,
-                [
-                    {
-                        CookieFieldnames.UUID: "f0",
-                        CookieFieldnames.CONTENTS: "{'a': 'f000'}",
-                    }
-                ],
-            )
+        dls_servbase_server_context = ServerContext(servbase_specification)
 
-            all_sql = f"SELECT * FROM {Tablenames.COOKIES}"
-            records = await dataface.query(all_sql)
+        async with dls_servbase_client_context:
+            async with dls_servbase_server_context:
+                dataface = dls_servbase_datafaces_get_default()
 
-            assert len(records) == 1
-            assert records[0][CookieFieldnames.UUID] == "f0"
-            assert records[0][CookieFieldnames.CONTENTS] == "{'a': 'f000'}"
+                # Write one record.
+                await dataface.insert(
+                    Tablenames.COOKIES,
+                    [
+                        {
+                            CookieFieldnames.UUID: "f0",
+                            CookieFieldnames.CONTENTS: "{'a': 'f000'}",
+                        }
+                    ],
+                )
 
-            # ----------------------------------------------------------------
-            # Now try a direct update.
-            record = {
-                CookieFieldnames.CONTENTS: "{'b': 'f1111'}",
-            }
+                all_sql = f"SELECT * FROM {Tablenames.COOKIES}"
+                records = await dataface.query(all_sql)
 
-            subs = ["f0"]
-            result = await dataface.update(
-                Tablenames.COOKIES,
-                record,
-                f"{CookieFieldnames.UUID} = ?",
-                subs=subs,
-                why="test update",
-            )
+                assert len(records) == 1
+                assert records[0][CookieFieldnames.UUID] == "f0"
+                assert records[0][CookieFieldnames.CONTENTS] == "{'a': 'f000'}"
 
-            assert result["count"] == 1
-            records = await dataface.query(all_sql)
+                # ----------------------------------------------------------------
+                # Now try a direct update.
+                record = {
+                    CookieFieldnames.CONTENTS: "{'b': 'f1111'}",
+                }
 
-            assert len(records) == 1
-            assert records[0][CookieFieldnames.UUID] == "f0"
-            assert records[0][CookieFieldnames.CONTENTS] == "{'b': 'f1111'}"
+                subs = ["f0"]
+                result = await dataface.update(
+                    Tablenames.COOKIES,
+                    record,
+                    f"{CookieFieldnames.UUID} = ?",
+                    subs=subs,
+                    why="test update",
+                )
 
-            # ----------------------------------------------------------------
-            # Now try a high level API update.
-            record = {
-                CookieFieldnames.UUID: "f0",
-                CookieFieldnames.CONTENTS: "{'c': 'f2222'}",
-            }
+                assert result["count"] == 1
+                records = await dataface.query(all_sql)
 
-            result = await dataface.update_cookie(
-                record,
-            )
+                assert len(records) == 1
+                assert records[0][CookieFieldnames.UUID] == "f0"
+                assert records[0][CookieFieldnames.CONTENTS] == "{'b': 'f1111'}"
 
-            assert result["count"] == 1
-            records = await dataface.query(all_sql)
+                # ----------------------------------------------------------------
+                # Now try a high level API update.
+                record = {
+                    CookieFieldnames.UUID: "f0",
+                    CookieFieldnames.CONTENTS: "{'c': 'f2222'}",
+                }
 
-            assert len(records) == 1
-            assert records[0][CookieFieldnames.UUID] == "f0"
-            assert records[0][CookieFieldnames.CONTENTS] == "{'c': 'f2222'}"
+                result = await dataface.update_cookie(
+                    record,
+                )
+
+                assert result["count"] == 1
+                records = await dataface.query(all_sql)
+
+                assert len(records) == 1
+                assert records[0][CookieFieldnames.UUID] == "f0"
+                assert records[0][CookieFieldnames.CONTENTS] == "{'c': 'f2222'}"
