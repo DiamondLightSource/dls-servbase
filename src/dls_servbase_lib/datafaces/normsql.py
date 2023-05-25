@@ -21,7 +21,9 @@ class Normsql(Thing):
     def __init__(self, specification=None):
         Thing.__init__(self, thing_type, specification)
 
+        # For testing, caller might want to drop the database on connection.
         self.__should_drop_database = specification.get("should_drop_database")
+
         self.__database = None
 
     # ----------------------------------------------------------------------------------------
@@ -43,6 +45,8 @@ class Normsql(Thing):
                 self.specification()["database"],
                 DatabaseDefinition(),
             )
+
+            # For testing, caller might want to drop the database on connection.
             await self.__database.connect(
                 should_drop_database=self.__should_drop_database
             )

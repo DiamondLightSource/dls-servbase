@@ -21,11 +21,11 @@ class TestDatabaseSqlite:
 
         database_specification = {
             "type": ClassTypes.AIOSQLITE,
-            "filename": "%s/dls_servbase_scheduler.sqlite" % (output_directory),
+            "filename": "%s/dls_servbase_pytest.sqlite" % (output_directory),
         }
 
         # Test direct SQL access to the database.
-        DatabaseTesterImage().main(
+        DatabaseTester().main(
             constants,
             database_specification,
             output_directory,
@@ -53,7 +53,7 @@ class TestDatabaseMysql:
         }
 
         # Test direct SQL access to the database.
-        DatabaseTesterImage().main(
+        DatabaseTester().main(
             constants,
             database_specification,
             output_directory,
@@ -61,7 +61,7 @@ class TestDatabaseMysql:
 
 
 # ----------------------------------------------------------------------------------------
-class DatabaseTesterImage(BaseTester2):
+class DatabaseTester(BaseTester2):
     """
     Test direct SQL access to the database.
     """
