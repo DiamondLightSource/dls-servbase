@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.5.2.
+.. # ********** It has been generated automatically by dae_devops version 0.5.3.dev1+g36e9e1c.d20230523.
 .. # ********** For repository_name dls-servbase
 
 Developing
@@ -22,7 +22,6 @@ Make sure to have at least python version 3.9 then::
 Install the package in edit mode which will also install all its dependencies::
 
     $ cd dls-servbase
-    $ export PIP_FIND_LINKS=/dls_sw/apps/bxflow/artifacts
     $ pip install -e .[dev]
 
 Now you may begin modifying the code.
@@ -36,4 +35,4 @@ If you plan to modify the docs, you will need to::
     
 
 
-.. # dae_devops_fingerprint 85a9a86c29f573bd408647f7092b6fbe
+.. # dae_devops_fingerprint eebb86b2433c3c3668ed0e68c2060ce3

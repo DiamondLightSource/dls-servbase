@@ -3,7 +3,7 @@ import logging
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
 
 # Base class for all aiosqlite database objects.
-from dls_servbase_lib.databases.table_definitions import CookiesTableDefinition
+from dls_servbase_api.databases.table_definitions import CookiesTableDefinition
 
 logger = logging.getLogger(__name__)
 
@@ -24,13 +24,13 @@ class DatabaseDefinition:
         self.LATEST_REVISION = 2
 
     # ----------------------------------------------------------------------------------------
-    async def apply_revision(self, revision):
+    async def apply_revision(self, database, revision):
         if revision == 2:
-            await self.execute(
+            await database.execute(
                 f"ALTER TABLE {Tablenames.COOKIES} ADD COLUMN {CookieFieldnames.NAME} TEXT",
                 why=f"revision 2: add {Tablenames.COOKIES} {CookieFieldnames.NAME} column",
             )
-            await self.execute(
+            await database.execute(
                 "CREATE INDEX %s_%s ON %s(%s)"
                 % (
                     Tablenames.COOKIES,
@@ -41,10 +41,10 @@ class DatabaseDefinition:
             )
 
     # ----------------------------------------------------------------------------------------
-    async def add_table_definitions(self):
+    async def add_table_definitions(self, database):
         """
         Make all the table definitions.
         """
 
         # Table schemas in our database.
-        self.add_table_definition(CookiesTableDefinition())
+        database.add_table_definition(CookiesTableDefinition())

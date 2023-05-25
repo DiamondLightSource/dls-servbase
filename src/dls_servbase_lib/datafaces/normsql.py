@@ -1,19 +1,20 @@
 import logging
 
+# Database manager.
+from dls_normsql.databases import Databases
+
 # Base class for generic things.
 from dls_utilpack.thing import Thing
 
 from dls_servbase_api.databases.constants import Tablenames
-
-# Database manager.
-from dls_servbase_lib.databases.databases import Databases
+from dls_servbase_api.databases.database_definition import DatabaseDefinition
 
 logger = logging.getLogger(__name__)
 
-thing_type = "dls_servbase_lib.datafaces.aiosqlite"
+thing_type = "dls_servbase_lib.datafaces.normsql"
 
 
-class Aiosqlite(Thing):
+class Normsql(Thing):
     """ """
 
     # ----------------------------------------------------------------------------------------
@@ -37,7 +38,10 @@ class Aiosqlite(Thing):
     async def establish_database_connection(self):
 
         if self.__database is None:
-            self.__database = Databases().build_object(self.specification()["database"])
+            self.__database = Databases().build_object(
+                self.specification()["database"],
+                DatabaseDefinition(),
+            )
             await self.__database.connect()
 
     # ----------------------------------------------------------------------------------------
