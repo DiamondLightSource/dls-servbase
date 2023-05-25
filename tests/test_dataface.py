@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 # ----------------------------------------------------------------------------------------
-class TestDataface:
+class TestDatafaceSqlite:
     """
     Test that we can do a basic database operation through the service.
     """
@@ -20,7 +20,20 @@ class TestDataface:
     def test(self, constants, logging_setup, output_directory):
         """ """
 
-        configuration_file = "tests/configurations/servbase.yaml"
+        configuration_file = "tests/configurations/sqlite.yaml"
+        DatafaceTester().main(constants, configuration_file, output_directory)
+
+
+# ----------------------------------------------------------------------------------------
+class TestDatafaceMysql:
+    """
+    Test that we can do a basic database operation through the service.
+    """
+
+    def test(self, constants, logging_setup, output_directory):
+        """ """
+
+        configuration_file = "tests/configurations/mysql.yaml"
         DatafaceTester().main(constants, configuration_file, output_directory)
 
 

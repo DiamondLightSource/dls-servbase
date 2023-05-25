@@ -21,6 +21,7 @@ class Normsql(Thing):
     def __init__(self, specification=None):
         Thing.__init__(self, thing_type, specification)
 
+        self.__should_drop_database = specification.get("should_drop_database")
         self.__database = None
 
     # ----------------------------------------------------------------------------------------
@@ -42,7 +43,9 @@ class Normsql(Thing):
                 self.specification()["database"],
                 DatabaseDefinition(),
             )
-            await self.__database.connect()
+            await self.__database.connect(
+                should_drop_database=self.__should_drop_database
+            )
 
     # ----------------------------------------------------------------------------------------
     async def reinstance(self):

@@ -12,11 +12,24 @@ logger = logging.getLogger(__name__)
 
 
 # ----------------------------------------------------------------------------------------
-class TestDatafaceTakeover:
-    def test_dataface_laptop(self, constants, logging_setup, output_directory):
+class TestDatafaceTakeoverSqlite:
+    def test(self, constants, logging_setup, output_directory):
         """ """
 
-        configuration_file = "tests/configurations/servbase.yaml"
+        configuration_file = "tests/configurations/sqlite.yaml"
+        DatafaceTakeoverTester().main(constants, configuration_file, output_directory)
+
+
+# ----------------------------------------------------------------------------------------
+class TestDatafaceTakeoverMysql:
+    """
+    Test that we can do a basic database operation through the service.
+    """
+
+    def test(self, constants, logging_setup, output_directory):
+        """ """
+
+        configuration_file = "tests/configurations/mysql.yaml"
         DatafaceTakeoverTester().main(constants, configuration_file, output_directory)
 
 
@@ -55,14 +68,45 @@ class DatafaceTakeoverTester(BaseContextTester):
                         }
                     ],
                 )
-
-            # Make a new dataface context with the same specification.
-            dls_servbase_server_context = ServerContext(servbase_specification)
-            # Activate the new dataface which should send shutdown to the old process.
-            async with dls_servbase_server_context:
                 all_sql = f"SELECT * FROM {Tablenames.COOKIES}"
                 records = await dataface.query(all_sql)
 
                 assert len(records) == 1
                 assert records[0][CookieFieldnames.UUID] == "f0"
                 assert records[0][CookieFieldnames.CONTENTS] == "{'a': 'f000'}"
+
+            # ----------------------------------------------------------------------------
+            # Make a new dataface context with the same specification, except don't drop.
+            servbase_specification["type_specific_tbd"][
+                "actual_dataface_specification"
+            ]["should_drop_database"] = False
+            dls_servbase_server_context = ServerContext(servbase_specification)
+            # Activate the new dataface which should send shutdown to the old process.
+            async with dls_servbase_server_context:
+                # Check the final insert made it to the database.
+                records = await dataface.query(all_sql)
+                assert len(records) == 1
+                assert records[0][CookieFieldnames.UUID] == "f0"
+                assert records[0][CookieFieldnames.CONTENTS] == "{'a': 'f000'}"
+
+                # Update the cookie record.
+                subs = []
+                subs.append("f0")
+                await dataface.update(
+                    Tablenames.COOKIES,
+                    {CookieFieldnames.CONTENTS: "{'a': 'f001'}"},
+                    f"{CookieFieldnames.UUID} = ?",
+                    subs=subs,
+                    why="update database revision",
+                )
+
+            # ----------------------------------------------------------------------------
+            # Make a new dataface context with the same specification, again without dropping.
+            dls_servbase_server_context = ServerContext(servbase_specification)
+            # Activate the new dataface which should send shutdown to the old process.
+            async with dls_servbase_server_context:
+                # Check the final update made it to the database.
+                records = await dataface.query(all_sql)
+                assert len(records) == 1
+                assert records[0][CookieFieldnames.UUID] == "f0"
+                assert records[0][CookieFieldnames.CONTENTS] == "{'a': 'f001'}"

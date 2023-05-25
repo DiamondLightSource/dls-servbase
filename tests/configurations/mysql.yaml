@@ -37,11 +37,16 @@ dls_servbase_dataface_specification: &DLS_SERVBASE_DATAFACE_SPECIFICATION
             port: *DATAFACE_PORT
         # The local implementation of the dls_servbase_dataface.
         actual_dataface_specification:
-            type: "dls_servbase_lib.datafaces.aiosqlite"
+            type: "dls_servbase_lib.datafaces.normsql"
+            should_drop_database: True
             database:
-                type: "dls_normsql.aiosqlite"
-                filename: "${output_directory}/dls_servbase_dataface.sqlite"
-                log_level: "WARNING"
+                type: "dls_normsql.aiomysql"
+                type_specific_tbd:
+                    database_name: "dls_servbase_pytest"
+                    host: "docker-mysql"
+                    port: 3306
+                    username: "root"
+                    password: "root"
     context:
         start_as: process
 

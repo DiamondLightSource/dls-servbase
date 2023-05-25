@@ -30,7 +30,7 @@ class TestGui:
     def test(self, constants, logging_setup, output_directory):
         """ """
 
-        configuration_file = "tests/configurations/servbase.yaml"
+        configuration_file = "tests/configurations/sqlite.yaml"
         GuiTester().main(constants, configuration_file, output_directory)
 
 
