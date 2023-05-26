@@ -45,7 +45,7 @@ class Aiohttp(Thing, BaseAiohttp):
     # ----------------------------------------------------------------------------------------
     def callsign(self):
         """"""
-        return "%s %s" % ("Dataface.Aiohttp", BaseAiohttp.callsign(self))
+        return "%s %s" % ("Servbase.Dataface", BaseAiohttp.callsign(self))
 
     # ----------------------------------------------------------------------------------------
     def activate_process(self):
@@ -68,7 +68,7 @@ class Aiohttp(Thing, BaseAiohttp):
         """
 
         try:
-            threading.current_thread().name = "dls_servbase_dataface"
+            threading.current_thread().name = "servbase_dataface"
 
             self.activate_thread_base(loop)
 
@@ -99,7 +99,16 @@ class Aiohttp(Thing, BaseAiohttp):
             await self.activate_coro_base(route_tuples)
 
         except Exception:
-            raise RuntimeError(f"unable to start {callsign(self)} server coro")
+            # We managed to get a dataface alive?
+            if self.__actual_dls_servbase_dataface is not None:
+                # Need to disconnect it so outer asyncio loop will quit.
+                logger.debug(
+                    f"[THRDIEP] {callsign(self)} disconnecting after failure to activate coro"
+                )
+
+                await self.__actual_dls_servbase_dataface.disconnect()
+
+            raise RuntimeError(f"{callsign(self)}  was unable to activate_coro")
 
     # ----------------------------------------------------------------------------------------
     async def direct_shutdown(self):
