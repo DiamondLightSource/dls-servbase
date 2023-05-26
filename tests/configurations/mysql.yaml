@@ -43,8 +43,9 @@ dls_servbase_dataface_specification: &DLS_SERVBASE_DATAFACE_SPECIFICATION
                 type: "dls_normsql.aiomysql"
                 type_specific_tbd:
                     database_name: "dls_servbase_pytest"
-                    host: "docker-mysql"
-                    port: 3306
+                    # These come straight from os.environ.
+                    host: "$MYSQL_HOST"
+                    port: "$MYSQL_PORT"
                     username: "root"
                     password: "root"
     context:

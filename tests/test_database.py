@@ -45,8 +45,8 @@ class TestDatabaseMysql:
             "type": ClassTypes.AIOMYSQL,
             "type_specific_tbd": {
                 "database_name": "dls_servbase_pytest",
-                "host": "docker-mysql",
-                "port": 3306,
+                "host": "$MYSQL_HOST",
+                "port": "$MYSQL_PORT",
                 "username": "root",
                 "password": "root",
             },
