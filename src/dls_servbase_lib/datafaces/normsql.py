@@ -1,24 +1,28 @@
 import logging
 
+# Database manager.
+from dls_normsql.databases import Databases
+
 # Base class for generic things.
 from dls_utilpack.thing import Thing
 
 from dls_servbase_api.databases.constants import Tablenames
-
-# Database manager.
-from dls_servbase_lib.databases.databases import Databases
+from dls_servbase_api.databases.database_definition import DatabaseDefinition
 
 logger = logging.getLogger(__name__)
 
-thing_type = "dls_servbase_lib.datafaces.aiosqlite"
+thing_type = "dls_servbase_lib.datafaces.normsql"
 
 
-class Aiosqlite(Thing):
+class Normsql(Thing):
     """ """
 
     # ----------------------------------------------------------------------------------------
     def __init__(self, specification=None):
         Thing.__init__(self, thing_type, specification)
+
+        # For testing, caller might want to drop the database on connection.
+        self.__should_drop_database = specification.get("should_drop_database")
 
         self.__database = None
 
@@ -37,8 +41,15 @@ class Aiosqlite(Thing):
     async def establish_database_connection(self):
 
         if self.__database is None:
-            self.__database = Databases().build_object(self.specification()["database"])
-            await self.__database.connect()
+            self.__database = Databases().build_object(
+                self.specification()["database"],
+                DatabaseDefinition(),
+            )
+
+            # For testing, caller might want to drop the database on connection.
+            await self.__database.connect(
+                should_drop_database=self.__should_drop_database
+            )
 
     # ----------------------------------------------------------------------------------------
     async def reinstance(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.5.2.
+# ********** It has been generated automatically by dae_devops version 0.5.3.
 # ********** For repository_name dls-servbase
 
 me=${BASH_SOURCE}
@@ -13,4 +13,4 @@ function __install {
 }
 
 
-# dae_devops_fingerprint 903ed54702867ede6f0174cc61d4b713
+# dae_devops_fingerprint 663e11dbca4cdd5f84a218a64398a688

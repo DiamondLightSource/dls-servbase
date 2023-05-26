@@ -47,10 +47,10 @@ class Datafaces(Things):
 
             return Aiohttp
 
-        elif class_type == "dls_servbase_lib.datafaces.aiosqlite":
-            from dls_servbase_lib.datafaces.aiosqlite import Aiosqlite
+        elif class_type == "dls_servbase_lib.datafaces.normsql":
+            from dls_servbase_lib.datafaces.normsql import Normsql
 
-            return Aiosqlite
+            return Normsql
 
         raise NotFound(
             "unable to get dls_servbase_dataface class for type %s" % (class_type)

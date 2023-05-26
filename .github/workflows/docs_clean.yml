@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.5.2.
+# ********** It has been generated automatically by dae_devops version 0.5.3.
 # ********** For repository_name dls-servbase
 
 name: Docs Cleanup CI
@@ -46,4 +46,4 @@ jobs:
           git commit -am "Removing redundant docs version $DOCS_VERSION"
           git push
 
-# dae_devops_fingerprint cd9ac693f5bf252fbaf5c9585cb1dd76
+# dae_devops_fingerprint d46d59a6f5197bd11b1cece615feb4df

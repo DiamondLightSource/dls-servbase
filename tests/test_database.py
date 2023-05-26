@@ -1,11 +1,11 @@
-import asyncio
 import logging
-import multiprocessing
 
-import pytest
+from dls_normsql.constants import ClassTypes
+from dls_normsql.databases import Databases
 
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
-from dls_servbase_lib.databases.databases import Databases
+from dls_servbase_api.databases.database_definition import DatabaseDefinition
+from tests.base_tester import BaseTester2
 
 logger = logging.getLogger(__name__)
 
@@ -20,12 +20,12 @@ class TestDatabaseSqlite:
         """
 
         database_specification = {
-            "type": "dls_servbase_lib.databases.aiosqlite",
-            "filename": "%s/dls_servbase_scheduler.sqlite" % (output_directory),
+            "type": ClassTypes.AIOSQLITE,
+            "filename": "%s/dls_servbase_pytest.sqlite" % (output_directory),
         }
 
         # Test direct SQL access to the database.
-        DatabaseTesterImage().main(
+        DatabaseTester().main(
             constants,
             database_specification,
             output_directory,
@@ -33,37 +33,35 @@ class TestDatabaseSqlite:
 
 
 # ----------------------------------------------------------------------------------------
-class _BaseTester:
-    """
-    Provide asyncio loop and error checking over *Tester classes.
-    """
-
-    def main(self, constants, specification, output_directory):
+class TestDatabaseMysql:
+    def test(self, constants, logging_setup, output_directory):
         """
-        This is the main program which calls the test using asyncio.
+        Tests the sqlite implementation of the Database interface.
+
+        This does not use a service.
         """
 
-        multiprocessing.current_process().name = "main"
+        database_specification = {
+            "type": ClassTypes.AIOMYSQL,
+            "type_specific_tbd": {
+                "database_name": "dls_servbase_pytest",
+                "host": "$MYSQL_HOST",
+                "port": "$MYSQL_PORT",
+                "username": "root",
+                "password": "root",
+            },
+        }
 
-        failure_message = None
-        try:
-            # Run main test in asyncio event loop.
-            asyncio.run(
-                self._main_coroutine(constants, specification, output_directory)
-            )
-
-        except Exception as exception:
-            logger.exception(
-                "unexpected exception in the test method", exc_info=exception
-            )
-            failure_message = str(exception)
-
-        if failure_message is not None:
-            pytest.fail(failure_message)
+        # Test direct SQL access to the database.
+        DatabaseTester().main(
+            constants,
+            database_specification,
+            output_directory,
+        )
 
 
 # ----------------------------------------------------------------------------------------
-class DatabaseTesterImage(_BaseTester):
+class DatabaseTester(BaseTester2):
     """
     Test direct SQL access to the database.
     """
@@ -74,11 +72,14 @@ class DatabaseTesterImage(_BaseTester):
         """ """
 
         databases = Databases()
-        database = databases.build_object(database_specification)
+        database = databases.build_object(
+            database_specification,
+            DatabaseDefinition(),
+        )
 
         try:
             # Connect to database.
-            await database.connect()
+            await database.connect(should_drop_database=True)
 
             # Write one record.
             await database.insert(

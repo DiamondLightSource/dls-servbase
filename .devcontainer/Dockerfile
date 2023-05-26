@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.5.2.
+# ********** It has been generated automatically by dae_devops version 0.5.3.
 # ********** For repository_name dls-servbase
 
 # This file is for use as a devcontainer and a runtime container
@@ -40,4 +40,4 @@ ENV PATH=/venv/bin:$PATH
 ENTRYPOINT ["dls-servbase"]
 CMD ["--version"]
 
-# dae_devops_fingerprint d98578ac4f9faec948660e9198138f35
+# dae_devops_fingerprint 80986671f8602f6e4666f78f98141826

@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.5.2.
+.. # ********** It has been generated automatically by dae_devops version 0.5.3.
 .. # ********** For repository_name dls-servbase
 
 Installing
@@ -26,7 +26,6 @@ installation will not interfere with any existing Python software::
 
 You can now use ``pip`` to install the library and its dependencies::
 
-    $ export PIP_FIND_LINKS=/dls_sw/apps/bxflow/artifacts
     $ python3 -m pip install dls-servbase
 
 If you require a feature that is not currently released you can also install
@@ -34,10 +33,10 @@ from git::
 
     $ python3 -m pip install git+https://gitlab.diamond.ac.uk/kbp43231/dls-servbase.git
 
-The library should now be installed and the commandline interface on your path.
+The library should now be installed and the commandline should be available.
 You can check the version that has been installed by typing::
 
     $ dls-servbase --version
     $ dls-servbase --version-json
 
-.. # dae_devops_fingerprint 4595ce95067039bcca5e2ff516cd03af
+.. # dae_devops_fingerprint 64d7ae0dde8939e479b9c793df928d15
