@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.5.3.dev1+g36e9e1c.d20230523.
+# ********** It has been generated automatically by dae_devops version 0.5.3.
 # ********** For repository_name dls-servbase
 
 from pathlib import Path
@@ -197,4 +197,4 @@ def setup(app):
     app.connect("source-read", ultimateReplace)
 
 
-# dae_devops_fingerprint ba6ece62c7dc3689eb6fad112cadcd16
+# dae_devops_fingerprint 529445ac120d879ddd71245754e51ecb

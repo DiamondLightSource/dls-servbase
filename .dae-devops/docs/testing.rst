@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.5.3.dev1+g36e9e1c.d20230523.
+.. # ********** It has been generated automatically by dae_devops version 0.5.3.
 .. # ********** For repository_name dls-servbase
 
 Testing
@@ -31,4 +31,4 @@ This allows peeking in there to see what's been written by the test.
     
 
 
-.. # dae_devops_fingerprint 813b0334290efd50c2d7ce4016da0dd9
+.. # dae_devops_fingerprint 3bd80bbd88306473a1ee98b988b17986

@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.5.3.dev1+g36e9e1c.d20230523.
+# ********** It has been generated automatically by dae_devops version 0.5.3.
 # ********** For repository_name dls-servbase
 
 # To get started with Dependabot version updates, you'll need to specify which
@@ -19,4 +19,4 @@ updates:
     schedule:
       interval: "weekly"
 
-# dae_devops_fingerprint b3be937b70abef292f3c9cda6ae5b12d
+# dae_devops_fingerprint b5838c5e0d9b5041500c5cb701fb5e5b
