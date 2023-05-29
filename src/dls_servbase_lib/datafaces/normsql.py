@@ -35,7 +35,7 @@ class Normsql(Thing):
     async def disconnect(self):
         if self.__database is not None:
             logger.debug(
-                "[THRDIEP] disconnecting from actual servbase dataface normsql implementation"
+                "[DISSHU] disconnecting from actual servbase dataface normsql implementation"
             )
             await self.__database.disconnect()
             self.__database = None
