@@ -10,4 +10,4 @@ class Commands:
 
 
 class Cookies:
-    TABS_MANAGER = "dls_servbase_guis::cookies::tabs_manager"
+    TABS_MANAGER = "DLS_SERVBASE_TABS_MANAGER"

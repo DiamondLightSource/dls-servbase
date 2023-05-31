@@ -43,7 +43,7 @@ def logging_setup():
     logging.getLogger("dls_servbase_lib.things").setLevel("INFO")
 
     # Messages about starting and stopping services.
-    logging.getLogger("dls_servbase_lib.base_aiohttp").setLevel("INFO")
+    # logging.getLogger("dls_servbase_lib.base_aiohttp").setLevel("INFO")
 
     # All dls_servbase database sql commands.
     # logging.getLogger("dls_servbase_lib.databases.aiosqlite").setLevel("INFO")

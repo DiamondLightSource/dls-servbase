@@ -71,6 +71,7 @@ class GuiTester(BaseContextTester):
                 ProtocoljKeywords.ENABLE_COOKIES: [Cookies.TABS_MANAGER],
             }
 
+            logger.debug("---------------------- making request 1 --------------------")
             response = await dls_servbase_guis_get_default().client_protocolj(
                 load_tabs_request, cookies={}
             )
@@ -84,8 +85,8 @@ class GuiTester(BaseContextTester):
             cookies = response["__cookies"]
             assert Cookies.TABS_MANAGER in cookies
 
-            # Use the cookie name in the next requests.
-            cookie_uuid = cookies[Cookies.TABS_MANAGER]
+            # Use the tabs manager cookie value in the next requests.
+            cookie_uuid = cookies[Cookies.TABS_MANAGER].value
 
             # --------------------------------------------------------------------
             # Select a tab.
@@ -97,6 +98,7 @@ class GuiTester(BaseContextTester):
                 Keywords.TAB_ID: "123",
             }
 
+            logger.debug("---------------------- making request 2 --------------------")
             response = await dls_servbase_guis_get_default().client_protocolj(
                 select_tab_request, cookies={Cookies.TABS_MANAGER: cookie_uuid}
             )
@@ -104,8 +106,14 @@ class GuiTester(BaseContextTester):
             # --------------------------------------------------------------------
             # Load tabs again, this time we should get the saved tab_id.
 
+            logger.debug("---------------------- making request 3 --------------------")
+            # Put a deliberately funky cookie string into the header.
+            raw_cookie_header = (
+                'BadCookie={"something"}; ' + f"{Cookies.TABS_MANAGER} = {cookie_uuid};"
+            )
             response = await dls_servbase_guis_get_default().client_protocolj(
-                load_tabs_request, cookies={Cookies.TABS_MANAGER: cookie_uuid}
+                load_tabs_request,
+                headers={"Cookie": raw_cookie_header},
             )
 
             logger.debug(describe("second load_tabs response", response))
@@ -122,9 +130,24 @@ class GuiTester(BaseContextTester):
                 Keywords.TAB_ID: "456",
             }
 
+            logger.debug("---------------------- making request 4 --------------------")
             response = await dls_servbase_guis_get_default().client_protocolj(
-                select_tab_request, cookies={Cookies.TABS_MANAGER: cookie_uuid}
+                select_tab_request,
+                cookies={Cookies.TABS_MANAGER: cookie_uuid},
             )
+
+            # --------------------------------------------------------------------
+            # Load tabs again, this time we should get the updated tab_id.
+
+            logger.debug("---------------------- making request 5 --------------------")
+            response = await dls_servbase_guis_get_default().client_protocolj(
+                load_tabs_request,
+                cookies={Cookies.TABS_MANAGER: cookie_uuid},
+            )
+
+            logger.debug(describe("third load_tabs response", response))
+            assert Keywords.TAB_ID in response
+            assert response[Keywords.TAB_ID] == "456"
 
             # --------------------------------------------------------------------
             # Write a text file and fetch it through the http server.
@@ -132,6 +155,9 @@ class GuiTester(BaseContextTester):
             contents = "some test html"
             with open(f"{output_directory}/{filename}", "wt") as file:
                 file.write(contents)
+            logger.debug(
+                "---------------------- making request 6 (html file) --------------------"
+            )
             text = await dls_servbase_guis_get_default().client_get_file(filename)
             # assert text == contents
 

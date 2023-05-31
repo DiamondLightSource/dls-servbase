@@ -93,7 +93,12 @@ class AiohttpClient:
             return await response.json()
 
     # ----------------------------------------------------------------------------------------
-    async def client_protocolj(self, request_object, cookies=None):
+    async def client_protocolj(
+        self,
+        request_object,
+        cookies=None,
+        headers=None,
+    ):
         """"""
         await self._establish_client_session()
 
@@ -104,6 +109,7 @@ class AiohttpClient:
                 f"{self.__client_netloc}/protocolj",
                 json=request_object,
                 cookies=cookies,
+                headers=headers,
             ) as response:
                 if response.status == 200:
                     response_json = await response.json()

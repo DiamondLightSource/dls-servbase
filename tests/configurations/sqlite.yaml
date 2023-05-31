@@ -5,7 +5,7 @@ logging_settings:
         enabled: True
         verbose: True
         filters:
-            markers:
+            Xmarkers:
                 - "[RELCOOK]"
                 - "[COOKSEL]"
                 - "[COOKOFF]"

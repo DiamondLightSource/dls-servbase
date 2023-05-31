@@ -17,6 +17,7 @@ from dls_logformatter.functions import list_exception_causes
 from dls_mainiac_lib.mainiac import Mainiac
 from dls_multiconf_lib.multiconfs import multiconfs_get_default, multiconfs_has_default
 from dls_utilpack.callsign import callsign
+from dls_utilpack.describe import describe
 from dls_utilpack.explain import explain
 from dls_utilpack.global_signals import global_sigint
 from dls_utilpack.modify_process_title import modify_process_title
@@ -25,6 +26,7 @@ from dls_utilpack.search_file import SearchFileNotFound, search_file
 
 from dls_servbase_api.aiohttp_client import AiohttpClient  # noqa: I001
 from dls_servbase_api.constants import Keywords  # noqa: I001
+from dls_servbase_lib.cookies.cookie_parser import CookieParser
 from dls_servbase_lib.cookies.cookies import Cookies
 
 logger = logging.getLogger(__name__)
@@ -507,11 +509,30 @@ class BaseAiohttp:
 
         logger.debug(f"[COOKOFF] registering cookies {cookie_names}")
 
+        # We have to parse the Cookie header ourselves from the raw
+        # since web_request.cookies uses SimpleCookie which doesn't work for
+        # Chrome's ill-formed: CookieControl={"necessaryCookies":[]
+        raw_header_cookie = web_request.headers.get("Cookie")
+        parsed_cookies = CookieParser().parse_raw(raw_header_cookie)
+        logger.debug(describe("[COOKOFF] parsed_cookies are", parsed_cookies))
+
+        # from http import cookies
+
+        # http_cookies = cookies.SimpleCookie()
+        # http_cookies.load(web_request.headers["Cookie"])
+        # logger.debug(
+        #     describe(
+        #         "[COOKOFF] http_cookies keys",
+        #         list(http_cookies.keys()),
+        #     )
+        # )
+
         # The caller gives the list of cookies that are interesting.
         for cookie_name in cookie_names:
             # We have a uuid for this cookie name already?
-            if cookie_name in web_request.cookies:
-                _uuid = web_request.cookies[cookie_name]
+            _uuid = parsed_cookies.get(cookie_name)
+
+            if _uuid is not None:
                 logger.debug(
                     f"[COOKOFF] registering cookie {cookie_name} from existing uuid {_uuid}"
                 )
@@ -731,10 +752,17 @@ class BaseAiohttp:
         return self.__callsign_url
 
     # ----------------------------------------------------------------------------------------
-    async def client_protocolj(self, request_object, cookies=None):
+    async def client_protocolj(
+        self,
+        request_object,
+        cookies=None,
+        headers=None,
+    ):
         """"""
         return await self.__aiohttp_client.client_protocolj(
-            request_object, cookies=cookies
+            request_object,
+            cookies=cookies,
+            headers=headers,
         )
 
     # ----------------------------------------------------------------------------------------
