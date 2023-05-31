@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.5.3.
+.. # ********** It has been generated automatically by dae_devops version 0.5.4.dev0+g1fb30ef.d20230527.
 .. # ********** For repository_name dls-servbase
 
 Contributing to the project
@@ -38,4 +38,4 @@ should follow.
 
 .. _Developer Guide: https://diamondlightsource.github.io/dls-servbase/main/developer/how-to/contribute.html
 
-.. # dae_devops_fingerprint 0f4cbc1f77b787f03a9a4d268ed08055
+.. # dae_devops_fingerprint 5554a59e62e5009c44a967ba6a56e3ea

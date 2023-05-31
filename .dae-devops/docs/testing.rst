@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.5.3.
+.. # ********** It has been generated automatically by dae_devops version 0.5.4.dev0+g1fb30ef.d20230527.
 .. # ********** For repository_name dls-servbase
 
 Testing
@@ -23,12 +23,12 @@ If you want to see more output of the test while it's running you can do::
 
 Each test will write files into its own directory::
 
-    /tmp/dls-servbase/tests/....
+    /tmp/dls-servbase/tests/*
 
 The tests clear their directory when they start, but not when they finish.
-This allows peeking in there to see what's been written by the test.
+This allows you to examine what's been written by the test.
 
     
 
 
-.. # dae_devops_fingerprint 3bd80bbd88306473a1ee98b988b17986
+.. # dae_devops_fingerprint 197b7a99ae5cd1520d710ad36ebd4236
