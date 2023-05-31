@@ -1,4 +1,4 @@
 Classes
 =======================================================================
-.. autoclass:: dls_servbase_lib.databases.databases.Databases
+.. autoclass:: dls_servbase_lib.datafaces.datafaces.Datafaces
     :members:

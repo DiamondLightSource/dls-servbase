@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.5.2.
+# ********** It has been generated automatically by dae_devops version 0.5.4.dev0+g1fb30ef.d20230527.
 # ********** For repository_name dls-servbase
 
 import json
@@ -102,4 +102,4 @@ def main(args=None):
 if __name__ == "__main__":
     main()
 
-# dae_devops_fingerprint fe647176edcb02077a904f8e42cf4367
+# dae_devops_fingerprint b0c90a9621cff9b99133ac54ac310ade
