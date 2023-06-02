@@ -1,7 +1,7 @@
 import logging
 
-# Base class which maps flask requests to methods.
-from dls_servbase_lib.contexts.base import Base as ContextBase
+# Base class for an asyncio server context.
+from dls_utilpack.server_context_base import ServerContextBase
 
 # Things created in the context.
 from dls_servbase_lib.guis.guis import Guis, dls_servbase_guis_set_default
@@ -12,14 +12,14 @@ logger = logging.getLogger(__name__)
 thing_type = "dls_servbase_lib.dls_servbase_guis.context"
 
 
-class Context(ContextBase):
+class Context(ServerContextBase):
     """
     Object representing an event dls_servbase_dataface connection.
     """
 
     # ----------------------------------------------------------------------------------------
     def __init__(self, specification):
-        ContextBase.__init__(self, thing_type, specification)
+        ServerContextBase.__init__(self, thing_type, specification)
 
     # ----------------------------------------------------------------------------------------
     async def aenter(self):
@@ -40,7 +40,7 @@ class Context(ContextBase):
             await self.server.start_process()
 
     # ----------------------------------------------------------------------------------------
-    async def aexit(self):
+    async def aexit(self, type, value, traceback):
         """ """
 
         if self.server is not None:

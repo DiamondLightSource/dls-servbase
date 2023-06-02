@@ -1,8 +1,8 @@
 import logging
 from typing import Dict
 
-# Base class for an asyncio context
-from dls_servbase_lib.contexts.base import Base as ContextBase
+# Base class for an asyncio server context.
+from dls_utilpack.server_context_base import ServerContextBase
 
 # Things created in the context.
 from dls_servbase_lib.datafaces.datafaces import Datafaces
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 thing_type = "dls_servbase_lib.datafaces.context"
 
 
-class Context(ContextBase):
+class Context(ServerContextBase):
     """
     Asyncio context for a servbase object.
     On entering, it creates the object according to the specification (a dict).
@@ -32,7 +32,7 @@ class Context(ContextBase):
                 The only key in the specification that relates to the context is "start_as", which can be "coro", "thread", "process" or None.
                 All other keys in the specification relate to creating the servbase object.
         """
-        ContextBase.__init__(self, thing_type, specification)
+        ServerContextBase.__init__(self, thing_type, specification)
 
     # ----------------------------------------------------------------------------------------
     async def aenter(self) -> None:
@@ -62,7 +62,7 @@ class Context(ContextBase):
             await self.server.activate()
 
     # ----------------------------------------------------------------------------------------
-    async def aexit(self) -> None:
+    async def aexit(self, type, value, traceback) -> None:
         """
         Asyncio context exit.
 

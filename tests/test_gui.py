@@ -6,12 +6,18 @@ from dls_utilpack.describe import describe
 # API constants.
 from dls_servbase_api.constants import Keywords as ProtocoljKeywords
 
-# Context creator.
-from dls_servbase_lib.contexts.contexts import Contexts
+# Client context.
+from dls_servbase_api.guis.context import Context as GuiClientContext
+from dls_servbase_api.guis.guis import dls_servbase_guis_get_default
+
+# Dataface server context.
+from dls_servbase_lib.datafaces.context import Context as DlsServbaseDatafaceContext
+
+# GUI constants.
 from dls_servbase_lib.guis.constants import Commands, Cookies, Keywords
 
-# Object managing gui
-from dls_servbase_lib.guis.guis import dls_servbase_guis_get_default
+# Server context.
+from dls_servbase_lib.guis.context import Context as GuiServerContext
 
 # Base class for the tester.
 from tests.base_context_tester import BaseContextTester
@@ -46,135 +52,150 @@ class GuiTester(BaseContextTester):
 
         # Make a multiconf and load the context configuration file.
         multiconf = self.get_multiconf()
-        context_configuration = await multiconf.load()
+        multiconf_dict = await multiconf.load()
 
-        dls_servbase_gui_specification = context_configuration[
-            "dls_servbase_gui_specification"
-        ]
-        type_specific_tbd = dls_servbase_gui_specification["type_specific_tbd"]
+        dataface_specification = multiconf_dict["dls_servbase_dataface_specification"]
+        dataface_context = DlsServbaseDatafaceContext(dataface_specification)
+
+        gui_specification = multiconf_dict["dls_servbase_gui_specification"]
+        type_specific_tbd = gui_specification["type_specific_tbd"]
         aiohttp_specification = type_specific_tbd["aiohttp_specification"]
         aiohttp_specification["search_paths"] = [output_directory]
 
-        # Make a context instance which can start a service and stop it at the end.
-        dls_servbase_context = Contexts().build_object(context_configuration)
+        # Make the server context.
+        gui_server_context = GuiServerContext(gui_specification)
 
-        async with dls_servbase_context:
+        # Make the client context.
+        gui_client_context = GuiClientContext(gui_specification)
 
-            # --------------------------------------------------------------------
-            # Use protocolj to fetch a request from the dataface.
-            # Simulates what javascript would do by ajax.
+        # Start the dataface the gui uses for cookies.
+        async with dataface_context:
+            # Start the gui client context.
+            async with gui_client_context:
+                # And the gui server context which starts the coro.
+                async with gui_server_context:
+                    await self.__run_the_test(constants, output_directory)
 
-            # Load tabs, of which there are none at the start.
-            # This establishes the cookie though.
-            load_tabs_request = {
-                Keywords.COMMAND: Commands.LOAD_TABS,
-                ProtocoljKeywords.ENABLE_COOKIES: [Cookies.TABS_MANAGER],
-            }
+    # ----------------------------------------------------------------------------------------
 
-            logger.debug("---------------------- making request 1 --------------------")
-            response = await dls_servbase_guis_get_default().client_protocolj(
-                load_tabs_request, cookies={}
-            )
+    async def __run_the_test(self, constants, output_directory):
+        """ """
+        # Reference the xchembku object which the context has set up as the default.
+        gui = dls_servbase_guis_get_default()
 
-            # The response is json, with the last saved tab_id, which is None at first.
-            assert Keywords.TAB_ID in response
-            assert response[Keywords.TAB_ID] is None
+        # --------------------------------------------------------------------
+        # Use protocolj to fetch a request from the dataface.
+        # Simulates what javascript would do by ajax.
 
-            # We should also have cookies back.
-            assert "__cookies" in response
-            cookies = response["__cookies"]
-            assert Cookies.TABS_MANAGER in cookies
+        # Load tabs, of which there are none at the start.
+        # This establishes the cookie though.
+        load_tabs_request = {
+            Keywords.COMMAND: Commands.LOAD_TABS,
+            ProtocoljKeywords.ENABLE_COOKIES: [Cookies.TABS_MANAGER],
+        }
 
-            # Use the tabs manager cookie value in the next requests.
-            cookie_uuid = cookies[Cookies.TABS_MANAGER].value
+        logger.debug("---------------------- making request 1 --------------------")
+        response = await gui.client_protocolj(load_tabs_request, cookies={})
 
-            # --------------------------------------------------------------------
-            # Select a tab.
-            # The response is json, but nothing really to see in it.
+        # The response is json, with the last saved tab_id, which is None at first.
+        assert Keywords.TAB_ID in response
+        assert response[Keywords.TAB_ID] is None
 
-            select_tab_request = {
-                Keywords.COMMAND: Commands.SELECT_TAB,
-                ProtocoljKeywords.ENABLE_COOKIES: [Cookies.TABS_MANAGER],
-                Keywords.TAB_ID: "123",
-            }
+        # We should also have cookies back.
+        assert "__cookies" in response
+        cookies = response["__cookies"]
+        assert Cookies.TABS_MANAGER in cookies
 
-            logger.debug("---------------------- making request 2 --------------------")
-            response = await dls_servbase_guis_get_default().client_protocolj(
-                select_tab_request, cookies={Cookies.TABS_MANAGER: cookie_uuid}
-            )
+        # Use the tabs manager cookie value in the next requests.
+        cookie_uuid = cookies[Cookies.TABS_MANAGER].value
 
-            # --------------------------------------------------------------------
-            # Load tabs again, this time we should get the saved tab_id.
+        # --------------------------------------------------------------------
+        # Select a tab.
+        # The response is json, but nothing really to see in it.
 
-            logger.debug("---------------------- making request 3 --------------------")
-            # Put a deliberately funky cookie string into the header.
-            raw_cookie_header = (
-                'BadCookie={"something"}; ' + f"{Cookies.TABS_MANAGER} = {cookie_uuid};"
-            )
-            response = await dls_servbase_guis_get_default().client_protocolj(
-                load_tabs_request,
-                headers={"Cookie": raw_cookie_header},
-            )
+        select_tab_request = {
+            Keywords.COMMAND: Commands.SELECT_TAB,
+            ProtocoljKeywords.ENABLE_COOKIES: [Cookies.TABS_MANAGER],
+            Keywords.TAB_ID: "123",
+        }
 
-            logger.debug(describe("second load_tabs response", response))
-            assert Keywords.TAB_ID in response
-            assert response[Keywords.TAB_ID] == "123"
+        logger.debug("---------------------- making request 2 --------------------")
+        response = await gui.client_protocolj(
+            select_tab_request, cookies={Cookies.TABS_MANAGER: cookie_uuid}
+        )
 
-            # --------------------------------------------------------------------
-            # Update a tab.
-            # The response is json, but nothing really to see in it.
+        # --------------------------------------------------------------------
+        # Load tabs again, this time we should get the saved tab_id.
 
-            select_tab_request = {
-                Keywords.COMMAND: Commands.SELECT_TAB,
-                ProtocoljKeywords.ENABLE_COOKIES: [Cookies.TABS_MANAGER],
-                Keywords.TAB_ID: "456",
-            }
+        logger.debug("---------------------- making request 3 --------------------")
+        # Put a deliberately funky cookie string into the header.
+        raw_cookie_header = (
+            'BadCookie={"something"}; ' + f"{Cookies.TABS_MANAGER} = {cookie_uuid};"
+        )
+        response = await gui.client_protocolj(
+            load_tabs_request,
+            headers={"Cookie": raw_cookie_header},
+        )
 
-            logger.debug("---------------------- making request 4 --------------------")
-            response = await dls_servbase_guis_get_default().client_protocolj(
-                select_tab_request,
-                cookies={Cookies.TABS_MANAGER: cookie_uuid},
-            )
+        logger.debug(describe("second load_tabs response", response))
+        assert Keywords.TAB_ID in response
+        assert response[Keywords.TAB_ID] == "123"
 
-            # --------------------------------------------------------------------
-            # Load tabs again, this time we should get the updated tab_id.
+        # --------------------------------------------------------------------
+        # Update a tab.
+        # The response is json, but nothing really to see in it.
 
-            logger.debug("---------------------- making request 5 --------------------")
-            response = await dls_servbase_guis_get_default().client_protocolj(
-                load_tabs_request,
-                cookies={Cookies.TABS_MANAGER: cookie_uuid},
-            )
+        select_tab_request = {
+            Keywords.COMMAND: Commands.SELECT_TAB,
+            ProtocoljKeywords.ENABLE_COOKIES: [Cookies.TABS_MANAGER],
+            Keywords.TAB_ID: "456",
+        }
 
-            logger.debug(describe("third load_tabs response", response))
-            assert Keywords.TAB_ID in response
-            assert response[Keywords.TAB_ID] == "456"
+        logger.debug("---------------------- making request 4 --------------------")
+        response = await gui.client_protocolj(
+            select_tab_request,
+            cookies={Cookies.TABS_MANAGER: cookie_uuid},
+        )
 
-            # --------------------------------------------------------------------
-            # Write a text file and fetch it through the http server.
-            filename = "test.html"
-            contents = "some test html"
-            with open(f"{output_directory}/{filename}", "wt") as file:
-                file.write(contents)
-            logger.debug(
-                "---------------------- making request 6 (html file) --------------------"
-            )
-            text = await dls_servbase_guis_get_default().client_get_file(filename)
-            # assert text == contents
+        # --------------------------------------------------------------------
+        # Load tabs again, this time we should get the updated tab_id.
 
-            # Write a binary file and fetch it through the http server.
-            filename = "test.exe"
-            contents = "some test binary"
-            with open(f"{output_directory}/{filename}", "wt") as file:
-                file.write(contents)
-            binary = await dls_servbase_guis_get_default().client_get_file(filename)
-            # Binary comes back as bytes due to suffix of url filename.
-            assert binary == contents.encode()
+        logger.debug("---------------------- making request 5 --------------------")
+        response = await gui.client_protocolj(
+            load_tabs_request,
+            cookies={Cookies.TABS_MANAGER: cookie_uuid},
+        )
 
-            # --------------------------------------------------------------------
-            # Get an html file automatically configured in guis/html.
-            filename = "javascript/version.js"
-            # TODO: Put proper version into javascript somehow during packaging.
-            contents = "dls_servbase___CURRENT_VERSION"
-            text = await dls_servbase_guis_get_default().client_get_file(filename)
-            logger.debug(f"javascript version is {text.strip()}")
-            assert contents in text
+        logger.debug(describe("third load_tabs response", response))
+        assert Keywords.TAB_ID in response
+        assert response[Keywords.TAB_ID] == "456"
+
+        # --------------------------------------------------------------------
+        # Write a text file and fetch it through the http server.
+        filename = "test.html"
+        contents = "some test html"
+        with open(f"{output_directory}/{filename}", "wt") as file:
+            file.write(contents)
+        logger.debug(
+            "---------------------- making request 6 (html file) --------------------"
+        )
+        text = await gui.client_get_file(filename)
+        # assert text == contents
+
+        # Write a binary file and fetch it through the http server.
+        filename = "test.exe"
+        contents = "some test binary"
+        with open(f"{output_directory}/{filename}", "wt") as file:
+            file.write(contents)
+        binary = await gui.client_get_file(filename)
+        # Binary comes back as bytes due to suffix of url filename.
+        assert binary == contents.encode()
+
+        # --------------------------------------------------------------------
+        # Get an html file automatically configured in guis/html.
+        filename = "javascript/version.js"
+        # TODO: Put proper version into javascript somehow during packaging.
+        contents = "dls_servbase___CURRENT_VERSION"
+        text = await gui.client_get_file(filename)
+        logger.debug(f"javascript version is {text.strip()}")
+        assert contents in text

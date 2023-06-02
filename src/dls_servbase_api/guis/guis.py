@@ -1,11 +1,11 @@
 # Use standard logging in this module.
 import logging
 
+# Exceptions.
+from dls_utilpack.exceptions import NotFound
+
 # Class managing list of things.
 from dls_utilpack.things import Things
-
-# Exceptions.
-from dls_servbase_api.exceptions import NotFound
 
 # Types.
 from dls_servbase_api.guis.constants import Types
@@ -26,11 +26,6 @@ def dls_servbase_guis_get_default():
     if __default_dls_servbase_gui is None:
         raise RuntimeError("dls_servbase_guis_get_default instance is None")
     return __default_dls_servbase_gui
-
-
-def dls_servbase_guis_has_default():
-    global __default_dls_servbase_gui
-    return __default_dls_servbase_gui is not None
 
 
 # -----------------------------------------------------------------------------------------
@@ -55,7 +50,7 @@ class Guis(Things):
             dls_servbase_gui_object = dls_servbase_gui_class(specification)
         except Exception as exception:
             raise RuntimeError(
-                "unable to build dls_servbase_gui object for type %s"
+                "unable to build dls_servbase gui object for type %s"
                 % (dls_servbase_gui_class)
             ) from exception
 
@@ -66,10 +61,8 @@ class Guis(Things):
         """"""
 
         if class_type == Types.AIOHTTP:
-            from dls_servbase_lib.guis.aiohttp import Aiohttp
+            from dls_servbase_api.guis.aiohttp import Aiohttp
 
             return Aiohttp
 
-        raise NotFound(
-            "unable to get dls_servbase_gui class for type %s" % (class_type)
-        )
+        raise NotFound(f"unable to get dls_servbase gui class for type {class_type}")
