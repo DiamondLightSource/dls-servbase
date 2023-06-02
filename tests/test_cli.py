@@ -1,6 +1,6 @@
 import asyncio
-import copy
 import logging
+import os
 import subprocess
 import time
 
@@ -9,7 +9,6 @@ from ruamel.yaml import YAML
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
 from dls_servbase_api.datafaces.context import Context as ClientContext
 from dls_servbase_api.datafaces.datafaces import dls_servbase_datafaces_get_default
-from dls_servbase_lib.datafaces.context import Context as ServerContext
 
 # Base class for the tester.
 from tests.base_context_tester import BaseContextTester
@@ -73,6 +72,7 @@ class CliTester(BaseContextTester):
         ]
 
         # Launch the service as a process.
+        os.environ["output_directory"] = output_directory
         logger.debug(f"launching {' '.join(dls_servbase_server_cli)}")
         process = subprocess.Popen(
             dls_servbase_server_cli,
@@ -144,16 +144,16 @@ class CliTester(BaseContextTester):
                 process.kill()
                 stdout_bytes, stderr_bytes = process.communicate()
 
-        # Get the return code of the process
-        return_code = process.returncode
-        logger.debug(f"server return_code is {return_code}")
+            # Get the return code of the process
+            return_code = process.returncode
+            logger.debug(f"server return_code is {return_code}")
 
-        logger.debug(
-            f"================================== server stderr is:\n{stderr_bytes.decode()}"
-        )
-        logger.debug(
-            f"================================== server stdout is:\n{stdout_bytes.decode()}"
-        )
-        logger.debug(f"==================================")
+            logger.debug(
+                f"================================== server stderr is:\n{stderr_bytes.decode()}"
+            )
+            logger.debug(
+                f"================================== server stdout is:\n{stdout_bytes.decode()}"
+            )
+            logger.debug(f"==================================")
 
         assert return_code == 0

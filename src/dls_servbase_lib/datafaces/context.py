@@ -47,17 +47,18 @@ class Context(ServerContextBase):
         # Build the object according to the specification.
         self.server = Datafaces().build_object(self.specification())
 
-        if self.context_specification.get("start_as") == "coro":
+        start_as = self.context_specification.get("start_as")
+        if start_as == "coro":
             await self.server.activate_coro()
 
-        elif self.context_specification.get("start_as") == "thread":
+        elif start_as == "thread":
             await self.server.start_thread()
 
-        elif self.context_specification.get("start_as") == "process":
+        elif start_as == "process":
             await self.server.start_process()
 
         # Not running as a service?
-        elif self.context_specification.get("start_as") == "direct":
+        elif start_as == "direct":
             # We need to activate the tick() task.
             await self.server.activate()
 
@@ -70,7 +71,9 @@ class Context(ServerContextBase):
         """
 
         if self.server is not None:
-            if self.context_specification.get("start_as") == "process":
+            start_as = self.context_specification.get("start_as")
+
+            if start_as == "process":
                 logger.info(
                     "[DISSHU] in context exit, sending shutdown to client process"
                 )
@@ -78,8 +81,8 @@ class Context(ServerContextBase):
                 await self.server.client_shutdown()
                 logger.info("[DISSHU] in context exit, sent shutdown to client process")
 
-            if self.context_specification.get("start_as") == "coro":
+            if start_as == "coro":
                 await self.server.direct_shutdown()
 
-            if self.context_specification.get("start_as") == "direct":
+            if start_as == "direct":
                 await self.server.deactivate()

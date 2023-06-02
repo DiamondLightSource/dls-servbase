@@ -94,7 +94,7 @@ class Aiohttp(Thing, BaseAiohttp):
             # Get the local implementation started.
             await self.__actual_dls_servbase_dataface.start()
 
-            logger.debug(f"calling coro of {callsign(self)}")
+            logger.debug(f"[CLIOPS] activating coro base of {callsign(self)}")
 
             await self.activate_coro_base(route_tuples)
 
@@ -132,9 +132,9 @@ class Aiohttp(Thing, BaseAiohttp):
     async def __do_actually(self, function, args, kwargs):
         """"""
 
-        # logger.info(describe("function", function))
-        # logger.info(describe("args", args))
-        # logger.info(describe("kwargs", kwargs))
+        # logger.info(describe("[CLIOPS] function", function))
+        # logger.info(describe("[CLIOPS] args", args))
+        # logger.info(describe("[CLIOPS] kwargs", kwargs))
 
         function = getattr(self.__actual_dls_servbase_dataface, function)
 

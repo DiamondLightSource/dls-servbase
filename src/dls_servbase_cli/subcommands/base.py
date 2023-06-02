@@ -35,30 +35,14 @@ class Base:
 
         dls_servbase_multiconf = self.build_object_from_environment(args_dict=args_dict)
 
-        # For convenience, make a temporary directory for this test.
-        self.__temporary_directory = tempfile.TemporaryDirectory()
-
-        # Make the temporary directory available to the multiconf.
-        dls_servbase_multiconf.substitute(
-            {"temporary_directory": self.__temporary_directory.name}
-        )
-
         substitutions = {
             "CWD": os.getcwd(),
             "HOME": os.environ.get("HOME", "HOME"),
             "USER": os.environ.get("USER", "USER"),
             "PATH": os.environ.get("PATH", "PATH"),
             "PYTHONPATH": os.environ.get("PYTHONPATH", "PYTHONPATH"),
+            "output_directory": os.environ.get("output_directory", "output_directory"),
         }
-
-        if hasattr(self._args, "visit") and self._args.visit != "VISIT":
-            BEAMLINE = os.environ.get("BEAMLINE")
-            if BEAMLINE is None:
-                raise RuntimeError("BEAMLINE environment variable is not defined")
-            year = get_visit_year(BEAMLINE, self._args.visit)
-            substitutions["BEAMLINE"] = BEAMLINE
-            substitutions["VISIT"] = self._args.visit
-            substitutions["YEAR"] = year
 
         dls_servbase_multiconf.substitute(substitutions)
 

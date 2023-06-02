@@ -61,6 +61,7 @@ class Service(Base):
         servbase_context = DlsServbaseDatafaceContext(specification)
 
         # Open the servbase context which starts the service process.
+        logger.debug("[CLIOPS] starting servbase coro context")
         async with servbase_context:
             # Wait for the coro to finish.
             await servbase_context.server.wait_for_shutdown()
