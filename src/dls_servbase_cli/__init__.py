@@ -1,1 +1,6 @@
-__version__ = "1.3.1"
+from importlib.metadata import version
+
+__version__ = version("dls_servbase")
+del version
+
+__all__ = ["__version__"]
