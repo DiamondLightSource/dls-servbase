@@ -41,7 +41,7 @@ class Main(Mainiac):
 
         # Make a parser.
         parser = argparse.ArgumentParser(
-            description="Command line app for checking quality of femtoscan file in progress.",
+            description="Command line interface to dls-servbase.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         )
 
@@ -61,7 +61,10 @@ class Main(Mainiac):
         subparsers.required = True
 
         # --------------------------------------------------------------------
-        subparser = subparsers.add_parser("service", help="Start service (blocking).")
+        subparser = subparsers.add_parser(
+            "service",
+            help="Start single service and block until ^C or remotely requested shutdown.",
+        )
         Service.add_arguments(subparser)
 
         return parser
@@ -93,12 +96,6 @@ class Main(Mainiac):
         # Don't show specific asyncio debug.
         logging.getLogger("asyncio").addFilter(_asyncio_logging_filter())
 
-        # Don't show matplotlib font debug.
-        logging.getLogger("matplotlib.font_manager").setLevel("INFO")
-
-        # Set filter on the ispyb logger to ignore the annoying NOTICE.
-        logging.getLogger("ispyb").addFilter(_ispyb_logging_filter())
-
     # ----------------------------------------------------------
     def version(self):
         """
@@ -118,23 +115,6 @@ class Main(Mainiac):
 
 
 # --------------------------------------------------------------------------------
-class _ispyb_logging_filter:
-    """
-    Python logging filter to remove annoying traitlets messages.
-    These are not super useful to see all the time at the DEBUG level.
-    """
-
-    def filter(self, record):
-
-        if record.msg.startswith(
-            "NOTICE: This code uses __future__ functionality in the ISPyB API."
-        ):
-            return 0
-
-        return 1
-
-
-# --------------------------------------------------------------------------------
 class _asyncio_logging_filter:
     """
     Python logging filter to remove annoying asyncio messages.
@@ -149,20 +129,6 @@ class _asyncio_logging_filter:
         return 1
 
 
-# # --------------------------------------------------------------------------------
-# class _matplotlib_logging_filter:
-#     """
-#     Python logging filter to remove annoying matplotlib messages.
-#     These are not super useful to see all the time at the INIT level.
-#     """
-
-#     def filter(self, record):
-#         if "loaded modules" in record.msg:
-#             return 0
-
-#         return 1
-
-
 # ---------------------------------------------------------------
 def main():
 
@@ -174,6 +140,19 @@ def main():
 
     # Run the main wrapped in a try/catch.
     main.try_run_catch()
+
+
+# ---------------------------------------------------------------
+def get_parser():
+    """
+    Called from sphinx automodule.
+    """
+
+    # Instantiate the app.
+    main = Main("dls_servbase_cli")
+
+    # Configure the app from command line arguments.
+    return main.build_parser()
 
 
 # ---------------------------------------------------------------

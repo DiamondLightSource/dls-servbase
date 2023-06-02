@@ -94,8 +94,6 @@ class Aiohttp(Thing, BaseAiohttp):
             # Get the local implementation started.
             await self.__actual_dls_servbase_dataface.start()
 
-            logger.debug(f"[CLIOPS] activating coro base of {callsign(self)}")
-
             await self.activate_coro_base(route_tuples)
 
         except Exception:

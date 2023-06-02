@@ -280,8 +280,6 @@ class BaseAiohttp:
         This is called from each server's activate_coro() method.
         """
         try:
-            logger.debug(f"[CLIOPS] shutting down other instances of {callsign(self)}")
-
             # Shut down any existing servers.
             result = await self.client_shutdown()
 
@@ -333,7 +331,6 @@ class BaseAiohttp:
                 site = aiohttp.web.UnixSite(self.__app_runner, parts.path)
 
             await site.start()
-            logger.debug(f"[CLIOPS] started web site of {callsign(self)}")
         except Exception as exception:
             raise RuntimeError(
                 explain(exception, f"exception starting {callsign(self)} site")

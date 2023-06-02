@@ -4,8 +4,6 @@ import os
 import subprocess
 import time
 
-from ruamel.yaml import YAML
-
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
 from dls_servbase_api.datafaces.context import Context as ClientContext
 from dls_servbase_api.datafaces.datafaces import dls_servbase_datafaces_get_default
@@ -19,11 +17,10 @@ logger = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------------------
 class TestCliSqlite:
     """
-    Test that we can do a basic database operation through the service.
+    Test that we can do a basic database operation through the service on sqlite databases.
     """
 
     def test(self, constants, logging_setup, output_directory):
-        """ """
 
         configuration_file = "tests/configurations/sqlite.yaml"
         CliTester(configuration_file).main(
@@ -34,11 +31,10 @@ class TestCliSqlite:
 # ----------------------------------------------------------------------------------------
 class TestCliMysql:
     """
-    Test that we can do a basic database operation through the service.
+    Test that we can do a basic database operation through the service on mysql databases.
     """
 
     def test(self, constants, logging_setup, output_directory):
-        """ """
 
         configuration_file = "tests/configurations/mysql.yaml"
         CliTester(configuration_file).main(
@@ -71,8 +67,10 @@ class CliTester(BaseContextTester):
             self.__configuration_file,
         ]
 
-        # Launch the service as a process.
+        # Let the output_directory symbol be replaced in the multiconf.
         os.environ["output_directory"] = output_directory
+
+        # Launch the service as a process.
         logger.debug(f"launching {' '.join(dls_servbase_server_cli)}")
         process = subprocess.Popen(
             dls_servbase_server_cli,
@@ -138,9 +136,10 @@ class CliTester(BaseContextTester):
                 await dataface.client_shutdown()
         finally:
             try:
-                # Wait for the process to finish and get the output
+                # Wait for the process to finish and get the output.
                 stdout_bytes, stderr_bytes = process.communicate(timeout=5)
             except subprocess.TimeoutExpired:
+                # Timeout happens when client dies but server hasn't been told to shutdown.
                 process.kill()
                 stdout_bytes, stderr_bytes = process.communicate()
 
@@ -154,6 +153,6 @@ class CliTester(BaseContextTester):
             logger.debug(
                 f"================================== server stdout is:\n{stdout_bytes.decode()}"
             )
-            logger.debug(f"==================================")
+            logger.debug("==================================")
 
         assert return_code == 0

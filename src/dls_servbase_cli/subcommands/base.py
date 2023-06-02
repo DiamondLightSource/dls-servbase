@@ -1,14 +1,10 @@
 import logging
 import os
-import tempfile
 from typing import Optional
 
 # Configurator.
 from dls_multiconf_lib.constants import ThingTypes as MulticonfThingTypes
 from dls_multiconf_lib.multiconfs import Multiconfs, multiconfs_set_default
-
-# Utilities.
-from dls_utilpack.visit import get_visit_year
 
 # Environment variables with some extra functionality.
 from dls_servbase_lib.envvar import Envvar
@@ -22,7 +18,7 @@ class ArgKeywords:
 
 class Base:
     """
-    Base class for femtocheck subcommands.  Handles details like configuration.
+    Base class for subcommands.  Handles details like configuration.
     """
 
     def __init__(self, args):
