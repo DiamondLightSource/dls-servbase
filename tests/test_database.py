@@ -5,7 +5,7 @@ from dls_normsql.databases import Databases
 
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
 from dls_servbase_api.databases.database_definition import DatabaseDefinition
-from tests.base_tester import BaseTester2
+from tests.base_tester import BaseTester
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class TestDatabaseMysql:
 
 
 # ----------------------------------------------------------------------------------------
-class DatabaseTester(BaseTester2):
+class DatabaseTester(BaseTester):
     """
     Test direct SQL access to the database.
     """

@@ -6,12 +6,14 @@ from dls_normsql.databases import Databases
 # Base class for generic things.
 from dls_utilpack.thing import Thing
 
+# Class types.
+from dls_servbase_api.constants import ClassTypes
 from dls_servbase_api.databases.constants import Tablenames
 from dls_servbase_api.databases.database_definition import DatabaseDefinition
 
 logger = logging.getLogger(__name__)
 
-thing_type = "dls_servbase_lib.datafaces.normsql"
+thing_type = ClassTypes.NORMSQL
 
 
 class Normsql(Thing):

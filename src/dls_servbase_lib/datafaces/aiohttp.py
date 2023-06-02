@@ -10,6 +10,9 @@ from dls_utilpack.require import require
 # Basic things.
 from dls_utilpack.thing import Thing
 
+# Class types.
+from dls_servbase_api.constants import ClassTypes
+
 # Dataface protocolj things.
 from dls_servbase_api.datafaces.constants import Commands, Keywords
 
@@ -22,7 +25,7 @@ from dls_servbase_lib.datafaces.datafaces import Datafaces
 
 logger = logging.getLogger(__name__)
 
-thing_type = "dls_servbase_lib.datafaces.aiohttp"
+thing_type = ClassTypes.AIOHTTP
 
 
 # ------------------------------------------------------------------------------------------
