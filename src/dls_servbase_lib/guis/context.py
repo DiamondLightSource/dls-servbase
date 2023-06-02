@@ -4,7 +4,7 @@ import logging
 from dls_utilpack.server_context_base import ServerContextBase
 
 # Things created in the context.
-from dls_servbase_lib.guis.guis import Guis, dls_servbase_guis_set_default
+from dls_servbase_lib.guis.guis import Guis
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +27,6 @@ class Context(ServerContextBase):
 
         self.server = Guis().build_object(self.specification())
 
-        # If there is more than one gui, the last one defined will be the default.
-        dls_servbase_guis_set_default(self.server)
-
         if self.context_specification.get("start_as") == "coro":
             await self.server.activate_coro()
 
@@ -49,5 +46,3 @@ class Context(ServerContextBase):
 
             # Release a client connection if we had one.
             await self.server.close_client_session()
-
-        dls_servbase_guis_set_default(None)

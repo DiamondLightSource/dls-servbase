@@ -95,6 +95,7 @@ class GuiTester(BaseContextTester):
         }
 
         logger.debug("---------------------- making request 1 --------------------")
+        logger.debug(describe("gui", gui))
         response = await gui.client_protocolj(load_tabs_request, cookies={})
 
         # The response is json, with the last saved tab_id, which is None at first.

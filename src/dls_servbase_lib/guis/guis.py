@@ -12,26 +12,6 @@ from dls_servbase_api.guis.constants import Types
 
 logger = logging.getLogger(__name__)
 
-# -----------------------------------------------------------------------------------------
-__default_dls_servbase_gui = None
-
-
-def dls_servbase_guis_set_default(dls_servbase_gui):
-    global __default_dls_servbase_gui
-    __default_dls_servbase_gui = dls_servbase_gui
-
-
-def dls_servbase_guis_get_default():
-    global __default_dls_servbase_gui
-    if __default_dls_servbase_gui is None:
-        raise RuntimeError("dls_servbase_guis_get_default instance is None")
-    return __default_dls_servbase_gui
-
-
-def dls_servbase_guis_has_default():
-    global __default_dls_servbase_gui
-    return __default_dls_servbase_gui is not None
-
 
 # -----------------------------------------------------------------------------------------
 
