@@ -47,7 +47,7 @@ dls_servbase_dataface_specification: &DLS_SERVBASE_DATAFACE_SPECIFICATION
 
 # The dls_servbase_gui specification.
 dls_servbase_gui_specification:
-    type: "dls_servbase_lib.dls_servbase_guis.aiohttp"
+    type: "dls_servbase_lib.guis.aiohttp"
     type_specific_tbd:
         # The remote dls_servbase_gui server access.
         aiohttp_specification:

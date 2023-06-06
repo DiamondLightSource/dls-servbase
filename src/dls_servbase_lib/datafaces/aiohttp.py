@@ -10,6 +10,9 @@ from dls_utilpack.require import require
 # Basic things.
 from dls_utilpack.thing import Thing
 
+# Class types.
+from dls_servbase_api.constants import ClassTypes
+
 # Dataface protocolj things.
 from dls_servbase_api.datafaces.constants import Commands, Keywords
 
@@ -22,7 +25,7 @@ from dls_servbase_lib.datafaces.datafaces import Datafaces
 
 logger = logging.getLogger(__name__)
 
-thing_type = "dls_servbase_lib.datafaces.aiohttp"
+thing_type = ClassTypes.AIOHTTP
 
 
 # ------------------------------------------------------------------------------------------
@@ -94,8 +97,6 @@ class Aiohttp(Thing, BaseAiohttp):
             # Get the local implementation started.
             await self.__actual_dls_servbase_dataface.start()
 
-            logger.debug(f"calling coro of {callsign(self)}")
-
             await self.activate_coro_base(route_tuples)
 
         except Exception:
@@ -132,9 +133,9 @@ class Aiohttp(Thing, BaseAiohttp):
     async def __do_actually(self, function, args, kwargs):
         """"""
 
-        # logger.info(describe("function", function))
-        # logger.info(describe("args", args))
-        # logger.info(describe("kwargs", kwargs))
+        # logger.info(describe("[CLIOPS] function", function))
+        # logger.info(describe("[CLIOPS] args", args))
+        # logger.info(describe("[CLIOPS] kwargs", kwargs))
 
         function = getattr(self.__actual_dls_servbase_dataface, function)
 

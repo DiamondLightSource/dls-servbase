@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
-
-# Use standard python logging
 import logging
 import multiprocessing
 
-# Base class with methods supporting command-line programs.
+# Base class with methods supporting MaxIV command-line programs.
 from dls_mainiac_lib.mainiac import Mainiac
 
 # The subcommands.
-from dls_servbase_cli.subcommands.start_services import StartServices
+from dls_servbase_cli.subcommands.service import Service
 
 # The package version.
 from dls_servbase_cli.version import meta as version_meta
@@ -28,8 +26,8 @@ class Main(Mainiac):
     def run(self):
         """"""
 
-        if self._args.subcommand == "start_services":
-            StartServices(self._args, self).run()
+        if self._args.subcommand == "service":
+            Service(self._args, self).run()
 
         else:
             raise RuntimeError("unhandled subcommand %s" % (self._args.subcommand))
@@ -43,7 +41,7 @@ class Main(Mainiac):
 
         # Make a parser.
         parser = argparse.ArgumentParser(
-            description="Command line app for checking quality of femtoscan file in progress.",
+            description="Command line interface to dls-servbase.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         )
 
@@ -63,8 +61,11 @@ class Main(Mainiac):
         subparsers.required = True
 
         # --------------------------------------------------------------------
-        subparser = subparsers.add_parser("start_services", help="Start service(s).")
-        StartServices.add_arguments(subparser)
+        subparser = subparsers.add_parser(
+            "service",
+            help="Start single service and block until ^C or remotely requested shutdown.",
+        )
+        Service.add_arguments(subparser)
 
         return parser
 
@@ -92,13 +93,8 @@ class Main(Mainiac):
         # Let the base class do most of the work.
         Mainiac.configure_logging(self, settings)
 
-        # See bisstis-maxiv-daqcluster for advanced logging filters.
-
-        # Don't show matplotlib font debug.
-        logging.getLogger("matplotlib.font_manager").setLevel("INFO")
-
-        # Set filter on the ispyb logger to ignore the annoying NOTICE.
-        logging.getLogger("ispyb").addFilter(_ispyb_logging_filter())
+        # Don't show specific asyncio debug.
+        logging.getLogger("asyncio").addFilter(_asyncio_logging_filter())
 
     # ----------------------------------------------------------
     def version(self):
@@ -119,34 +115,18 @@ class Main(Mainiac):
 
 
 # --------------------------------------------------------------------------------
-class _ispyb_logging_filter:
+class _asyncio_logging_filter:
     """
-    Python logging filter to remove annoying traitlets messages.
+    Python logging filter to remove annoying asyncio messages.
     These are not super useful to see all the time at the DEBUG level.
     """
 
     def filter(self, record):
 
-        if record.msg.startswith(
-            "NOTICE: This code uses __future__ functionality in the ISPyB API."
-        ):
+        if "Using selector" in record.msg:
             return 0
 
         return 1
-
-
-# # --------------------------------------------------------------------------------
-# class _matplotlib_logging_filter:
-#     """
-#     Python logging filter to remove annoying matplotlib messages.
-#     These are not super useful to see all the time at the INIT level.
-#     """
-
-#     def filter(self, record):
-#         if "loaded modules" in record.msg:
-#             return 0
-
-#         return 1
 
 
 # ---------------------------------------------------------------
@@ -160,6 +140,19 @@ def main():
 
     # Run the main wrapped in a try/catch.
     main.try_run_catch()
+
+
+# ---------------------------------------------------------------
+def get_parser():
+    """
+    Called from sphinx automodule.
+    """
+
+    # Instantiate the app.
+    main = Main("dls_servbase_cli")
+
+    # Configure the app from command line arguments.
+    return main.build_parser()
 
 
 # ---------------------------------------------------------------

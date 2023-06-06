@@ -1,8 +1,8 @@
 import logging
 from typing import Dict
 
-# Base class for an asyncio context
-from dls_servbase_lib.contexts.base import Base as ContextBase
+# Base class for an asyncio server context.
+from dls_utilpack.server_context_base import ServerContextBase
 
 # Things created in the context.
 from dls_servbase_lib.datafaces.datafaces import Datafaces
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 thing_type = "dls_servbase_lib.datafaces.context"
 
 
-class Context(ContextBase):
+class Context(ServerContextBase):
     """
     Asyncio context for a servbase object.
     On entering, it creates the object according to the specification (a dict).
@@ -32,7 +32,7 @@ class Context(ContextBase):
                 The only key in the specification that relates to the context is "start_as", which can be "coro", "thread", "process" or None.
                 All other keys in the specification relate to creating the servbase object.
         """
-        ContextBase.__init__(self, thing_type, specification)
+        ServerContextBase.__init__(self, thing_type, specification)
 
     # ----------------------------------------------------------------------------------------
     async def aenter(self) -> None:
@@ -47,22 +47,23 @@ class Context(ContextBase):
         # Build the object according to the specification.
         self.server = Datafaces().build_object(self.specification())
 
-        if self.context_specification.get("start_as") == "coro":
+        start_as = self.context_specification.get("start_as")
+        if start_as == "coro":
             await self.server.activate_coro()
 
-        elif self.context_specification.get("start_as") == "thread":
+        elif start_as == "thread":
             await self.server.start_thread()
 
-        elif self.context_specification.get("start_as") == "process":
+        elif start_as == "process":
             await self.server.start_process()
 
         # Not running as a service?
-        elif self.context_specification.get("start_as") == "direct":
+        elif start_as == "direct":
             # We need to activate the tick() task.
             await self.server.activate()
 
     # ----------------------------------------------------------------------------------------
-    async def aexit(self) -> None:
+    async def aexit(self, type, value, traceback) -> None:
         """
         Asyncio context exit.
 
@@ -70,7 +71,9 @@ class Context(ContextBase):
         """
 
         if self.server is not None:
-            if self.context_specification.get("start_as") == "process":
+            start_as = self.context_specification.get("start_as")
+
+            if start_as == "process":
                 logger.info(
                     "[DISSHU] in context exit, sending shutdown to client process"
                 )
@@ -78,8 +81,8 @@ class Context(ContextBase):
                 await self.server.client_shutdown()
                 logger.info("[DISSHU] in context exit, sent shutdown to client process")
 
-            if self.context_specification.get("start_as") == "coro":
+            if start_as == "coro":
                 await self.server.direct_shutdown()
 
-            if self.context_specification.get("start_as") == "direct":
+            if start_as == "direct":
                 await self.server.deactivate()
