@@ -155,6 +155,27 @@ class Normsql(Thing):
         }
 
     # ----------------------------------------------------------------------------------------
+    async def begin(self, why=None) -> None:
+        """"""
+        await self.establish_database_connection()
+
+        return await self.__database.begin()
+
+    # ----------------------------------------------------------------------------------------
+    async def commit(self, why=None) -> None:
+        """"""
+        await self.establish_database_connection()
+
+        return await self.__database.commit()
+
+    # ----------------------------------------------------------------------------------------
+    async def rollback(self, why=None) -> None:
+        """"""
+        await self.establish_database_connection()
+
+        return await self.__database.rollback()
+
+    # ----------------------------------------------------------------------------------------
     async def report_health(self):
         """"""
 

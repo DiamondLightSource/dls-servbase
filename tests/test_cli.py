@@ -4,6 +4,8 @@ import os
 import subprocess
 import time
 
+from dls_utilpack.describe import describe
+
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
 from dls_servbase_api.datafaces.context import Context as ClientContext
 from dls_servbase_api.datafaces.datafaces import dls_servbase_datafaces_get_default
@@ -88,9 +90,7 @@ class CliTester(BaseContextTester):
                 "dls_servbase_dataface_specification"
             ]
             dls_servbase_client_context = ClientContext(servbase_specification)
-            async with dls_servbase_client_context:
-                dataface = dls_servbase_datafaces_get_default()
-
+            async with dls_servbase_client_context as dls_servbase_client:
                 # Some easy sql query.
                 all_sql = f"SELECT * FROM {Tablenames.COOKIES}"
 
@@ -98,17 +98,24 @@ class CliTester(BaseContextTester):
                 start_time = time.time()
                 max_seconds = 5.0
                 while True:
-                    try:
-                        records = await dataface.query(all_sql)
+                    # Try to check the health.
+                    health = await dls_servbase_client.client_report_health()
+
+                    # Check if health report contains an exception.
+                    exception = health.get("exception")
+                    if exception is None:
+                        logger.debug(describe("health", health))
+                        # Continue with test if no exception.
                         break
-                    except Exception as exception:
-                        logger.debug(f"retrying after failure {exception}")
+
+                    logger.debug(f"[CONNRETRY] retrying after {exception}")
 
                     if process.poll() is not None:
                         raise RuntimeError(
-                            "server apprently died before first command worked"
+                            "server apprently died without being able to give a health check"
                         )
 
+                    # Too much time has elapsed?
                     if time.time() - start_time > max_seconds:
                         raise RuntimeError(
                             f"server not answering within {max_seconds} seconds"
@@ -117,7 +124,7 @@ class CliTester(BaseContextTester):
                     await asyncio.sleep(1.0)
 
                 # Interact with it.
-                await dataface.insert(
+                await dls_servbase_client.insert(
                     Tablenames.COOKIES,
                     [
                         {
@@ -127,13 +134,13 @@ class CliTester(BaseContextTester):
                     ],
                 )
 
-                records = await dataface.query(all_sql)
+                records = await dls_servbase_client.query(all_sql)
 
                 assert len(records) == 1
                 assert records[0][CookieFieldnames.UUID] == "f0"
                 assert records[0][CookieFieldnames.CONTENTS] == "{'a': 'f000'}"
 
-                await dataface.client_shutdown()
+                await dls_servbase_client.client_shutdown()
         finally:
             try:
                 # Wait for the process to finish and get the output.
@@ -147,12 +154,15 @@ class CliTester(BaseContextTester):
             return_code = process.returncode
             logger.debug(f"server return_code is {return_code}")
 
-            logger.debug(
-                f"================================== server stderr is:\n{stderr_bytes.decode()}"
-            )
-            logger.debug(
-                f"================================== server stdout is:\n{stdout_bytes.decode()}"
-            )
-            logger.debug("==================================")
+            if len(stderr_bytes) > 0:
+                logger.debug(
+                    f"================================== server stderr is:\n{stderr_bytes.decode()}"
+                )
+            if len(stdout_bytes) > 0:
+                logger.debug(
+                    f"================================== server stdout is:\n{stdout_bytes.decode()}"
+                )
+            if len(stderr_bytes) > 0 or len(stdout_bytes) > 0:
+                logger.debug("================================== end of server output")
 
         assert return_code == 0

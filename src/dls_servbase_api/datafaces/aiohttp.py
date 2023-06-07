@@ -30,29 +30,63 @@ class Aiohttp(AiohttpClient):
     # ----------------------------------------------------------------------------------------
     async def query(self, sql, subs=None, why=None):
         """"""
-        return await self.__send_protocolj("query", sql, subs=subs, why=why)
+        return await self.__send_protocolj(
+            "query",
+            sql,
+            subs=subs,
+            why=why,
+        )
 
     # ----------------------------------------------------------------------------------------
     async def execute(self, sql, subs=None, why=None):
         """"""
-        return await self.__send_protocolj("execute", sql, subs=subs, why=why)
+        return await self.__send_protocolj(
+            "execute",
+            sql,
+            subs=subs,
+            why=why,
+            as_transaction=True,
+        )
 
     # ----------------------------------------------------------------------------------------
     async def insert(self, table_name, records, why=None):
         """"""
-        return await self.__send_protocolj("insert", table_name, records, why=why)
+        return await self.__send_protocolj(
+            "insert",
+            table_name,
+            records,
+            why=why,
+            as_transaction=True,
+        )
 
     # ----------------------------------------------------------------------------------------
-    async def update(self, table_name, record, where, subs=None, why=None):
+    async def update(
+        self,
+        table_name,
+        record,
+        where,
+        subs=None,
+        why=None,
+    ):
         """"""
         return await self.__send_protocolj(
-            "update", table_name, record, where, subs=subs, why=why
+            "update",
+            table_name,
+            record,
+            where,
+            subs=subs,
+            why=why,
+            as_transaction=True,
         )
 
     # ----------------------------------------------------------------------------------------
     async def set_cookie(self, cookie_dict):
         """ """
-        return await self.__send_protocolj("set_cookie", cookie_dict)
+        return await self.__send_protocolj(
+            "set_cookie",
+            cookie_dict,
+            as_transaction=True,
+        )
 
     # ----------------------------------------------------------------------------------------
     async def get_cookie(self, cookie_uuid):
@@ -60,12 +94,19 @@ class Aiohttp(AiohttpClient):
         Get single cookie from its uuid.
         Returns database record format.
         """
-        return await self.__send_protocolj("get_cookie", cookie_uuid)
+        return await self.__send_protocolj(
+            "get_cookie",
+            cookie_uuid,
+        )
 
     # ----------------------------------------------------------------------------------------
     async def update_cookie(self, row):
         """"""
-        return await self.__send_protocolj("update_cookie", row)
+        return await self.__send_protocolj(
+            "update_cookie",
+            row,
+            as_transaction=True,
+        )
 
     # ----------------------------------------------------------------------------------------
     async def __send_protocolj(self, function, *args, **kwargs):
@@ -81,8 +122,3 @@ class Aiohttp(AiohttpClient):
                 },
             },
         )
-
-    # ----------------------------------------------------------------------------------------
-    async def report_health(self):
-        """"""
-        return await self.__send_protocolj("report_health")

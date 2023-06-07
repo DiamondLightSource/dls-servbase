@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import multiprocessing
 import threading
@@ -43,7 +44,7 @@ class Aiohttp(Thing, BaseAiohttp):
             calling_file=__file__,
         )
 
-        self.__actual_dls_servbase_dataface = None
+        self.__actual_dataface = None
 
     # ----------------------------------------------------------------------------------------
     def callsign(self):
@@ -88,26 +89,30 @@ class Aiohttp(Thing, BaseAiohttp):
             route_tuples = []
 
             # Build a local dls_servbase_dataface for our back-end.
-            self.__actual_dls_servbase_dataface = Datafaces().build_object(
+            self.__actual_dataface = Datafaces().build_object(
                 self.specification()["type_specific_tbd"][
                     "actual_dataface_specification"
                 ]
             )
 
+            # Use a lock around all transaction-based requests.
+            # TODO: Remove aiohttp transaction lock and instead use connection pool.
+            self.__transaction_lock = asyncio.Lock()
+
             # Get the local implementation started.
-            await self.__actual_dls_servbase_dataface.start()
+            await self.__actual_dataface.start()
 
             await self.activate_coro_base(route_tuples)
 
         except Exception:
             # We managed to get a dataface alive?
-            if self.__actual_dls_servbase_dataface is not None:
+            if self.__actual_dataface is not None:
                 # Need to disconnect it so outer asyncio loop will quit.
                 logger.debug(
                     f"[THRDIEP] {callsign(self)} disconnecting after failure to activate coro"
                 )
 
-                await self.__actual_dls_servbase_dataface.disconnect()
+                await self.__actual_dataface.disconnect()
 
             raise RuntimeError(f"{callsign(self)}  was unable to activate_coro")
 
@@ -116,7 +121,7 @@ class Aiohttp(Thing, BaseAiohttp):
         """"""
         try:
             # Disconnect our local dataface connection, i.e. the one which holds the database connection.
-            await self.__actual_dls_servbase_dataface.disconnect()
+            await self.__actual_dataface.disconnect()
 
         except Exception as exception:
             raise RuntimeError(
@@ -133,13 +138,36 @@ class Aiohttp(Thing, BaseAiohttp):
     async def __do_actually(self, function, args, kwargs):
         """"""
 
-        # logger.info(describe("[CLIOPS] function", function))
-        # logger.info(describe("[CLIOPS] args", args))
-        # logger.info(describe("[CLIOPS] kwargs", kwargs))
+        # logger.info(describe("function", function))
+        # logger.info(describe("args", args))
+        # logger.info(describe("kwargs", kwargs))
 
-        function = getattr(self.__actual_dls_servbase_dataface, function)
+        # Get the function which the caller wants executed.
+        function = getattr(self.__actual_dataface, function)
 
-        response = await function(*args, **kwargs)
+        # Caller wants the function wrapped in a transaction?
+        if "as_transaction" in kwargs:
+            as_transaction = kwargs["as_transaction"]
+            # Take the keyword out of the kwargs because the functions don't have it.
+            kwargs.pop("as_transaction")
+        else:
+            as_transaction = False
+
+        if as_transaction:
+            # Make sure we have an actual connection.
+            await self.__actual_dataface.establish_database_connection()
+
+            # Lock out all other requests from running their own transaction.
+            async with self.__transaction_lock:
+                try:
+                    await self.__actual_dataface.begin()
+                    response = await function(*args, **kwargs)
+                    await self.__actual_dataface.commit()
+                except Exception:
+                    await self.__actual_dataface.rollback()
+                    raise
+        else:
+            response = await function(*args, **kwargs)
 
         return response
 
