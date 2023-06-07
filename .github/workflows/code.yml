@@ -1,5 +1,5 @@
 # ********** Please don't edit this file!
-# ********** It has been generated automatically by dae_devops version 0.5.4.dev0+g1fb30ef.d20230527.
+# ********** It has been generated automatically by dae_devops version 0.5.3.
 # ********** For repository_name dls-servbase
 
 name: Code CI
@@ -211,4 +211,4 @@ jobs:
         with:
           password: ${{ secrets.PYPI_TOKEN }}
 
-# dae_devops_fingerprint 20cc3e951a4652adfe1bdb16f0746054
+# dae_devops_fingerprint 66f0e76ce29e7f64d1ef000bebeb3d8b

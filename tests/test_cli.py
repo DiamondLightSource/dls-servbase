@@ -8,7 +8,6 @@ from dls_utilpack.describe import describe
 
 from dls_servbase_api.databases.constants import CookieFieldnames, Tablenames
 from dls_servbase_api.datafaces.context import Context as ClientContext
-from dls_servbase_api.datafaces.datafaces import dls_servbase_datafaces_get_default
 
 # Base class for the tester.
 from tests.base_context_tester import BaseContextTester

@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.5.4.dev0+g1fb30ef.d20230527.
+.. # ********** It has been generated automatically by dae_devops version 0.5.3.
 .. # ********** For repository_name dls-servbase
 
 Installing
@@ -39,4 +39,4 @@ You can check the version that has been installed by typing::
     $ dls-servbase --version
     $ dls-servbase --version-json
 
-.. # dae_devops_fingerprint f5c12f1646c65db4968cb1f7cc1306d0
+.. # dae_devops_fingerprint b97a5d420f58e39a53c0a12e14d49e59

@@ -1,5 +1,5 @@
 .. # ********** Please don't edit this file!
-.. # ********** It has been generated automatically by dae_devops version 0.5.4.dev0+g1fb30ef.d20230527.
+.. # ********** It has been generated automatically by dae_devops version 0.5.3.
 .. # ********** For repository_name dls-servbase
 
 Developing
@@ -28,4 +28,4 @@ Install the package in edit mode which will also install all its dependencies::
 Now you may begin modifying the code.
 
 
-.. # dae_devops_fingerprint 0fd7e3e20b23c566fad722262ab9f97a
+.. # dae_devops_fingerprint 382b21157de1abc87034e692cbcabaf2
