@@ -37,12 +37,23 @@ class Context(ServerContextBase):
             await self.server.start_process()
 
     # ----------------------------------------------------------------------------------------
-    async def aexit(self, type, value, traceback):
-        """ """
+    async def aexit(self, type=None, value=None, traceback=None):
+        """
+        Asyncio context exit.
+
+        Stop service if one was started and releases any client resources.
+        """
+        logger.debug(f"[DISSHU] {thing_type} aexit")
 
         if self.server is not None:
-            # Put in request to shutdown the server.
-            await self.server.client_shutdown()
+            start_as = self.context_specification.get("start_as")
 
-            # Release a client connection if we had one.
-            await self.server.close_client_session()
+            if start_as == "process":
+                # The server associated with this context is running?
+                if await self.is_process_alive():
+                    logger.debug(f"[DISSHU] {thing_type} calling client_shutdown")
+                    # Put in request to shutdown the server.
+                    await self.server.client_shutdown()
+
+            if start_as == "coro":
+                await self.server.direct_shutdown()
