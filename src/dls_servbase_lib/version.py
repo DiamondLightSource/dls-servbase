@@ -46,6 +46,14 @@ def meta(given_meta: Optional[dict] = None) -> dict:
     except Exception:
         meta["setproctitle"] = "unavailable"
 
+    try:
+        import aiohttp
+
+        aiohttp.__version__
+        meta["aiohttp"] = aiohttp.__version__
+    except Exception:
+        meta["aiohttp"] = "unavailable"
+
     if given_meta is not None:
         given_meta.update(meta)
     else:
